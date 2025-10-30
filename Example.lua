@@ -10,6 +10,39 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = game:GetService("CoreGui")
 
+-- Função para arrastar apenas pelo header
+local function makeHeaderDraggable(header, frame)
+    local dragging = false
+    local dragInput, mousePos, framePos
+
+    header.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            mousePos = input.Position
+            framePos = frame.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+
+    header.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - mousePos
+            frame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+        end
+    end)
+end
+
 -- Função para criar Window
 function SpectrumUI:CreateWindow(config)
     local Window = {}
@@ -24,7 +57,6 @@ function SpectrumUI:CreateWindow(config)
     MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
     MainFrame.BorderSizePixel = 0
     MainFrame.Active = true
-    MainFrame.Draggable = true
     MainFrame.Visible = true
     MainFrame.Parent = ScreenGui
     
@@ -86,6 +118,9 @@ function SpectrumUI:CreateWindow(config)
     Subtitle.TextColor3 = Color3.fromRGB(200, 200, 200)
     Subtitle.TextXAlignment = Enum.TextXAlignment.Left
     Subtitle.Parent = Header
+
+    -- Drag apenas pelo Header
+    makeHeaderDraggable(Header, MainFrame)
     
     -- Botão Minimizar
     local MinimizeButton = Instance.new("TextButton")
@@ -257,7 +292,7 @@ function SpectrumUI:CreateWindow(config)
             ButtonLabel.Size = UDim2.new(1, -20, 1, 0)
             ButtonLabel.Position = UDim2.new(0, 10, 0, 0)
             ButtonLabel.BackgroundTransparency = 1
-            ButtonLabel.Text = "🖱️ " .. (btnConfig.Name or "Button")
+            ButtonLabel.Text = btnConfig.Name or "Button"
             ButtonLabel.Font = Enum.Font.GothamBold
             ButtonLabel.TextSize = 13
             ButtonLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -557,7 +592,7 @@ function SpectrumUI:CreateToggleButton(config)
         ScreenGui:FindFirstChild("MainFrame").Visible = not ScreenGui:FindFirstChild("MainFrame").Visible
     end)
     
-    -- Draggable
+    -- Draggable do botão flutuante continua igual
     local dragging = false
     local dragInput, mousePos, framePos
     
