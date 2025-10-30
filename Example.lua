@@ -12,7 +12,45 @@ ScreenGui.Parent = game:GetService("CoreGui")
 
 -- Função para criar Window
 function SpectrumUI:CreateWindow(config)
-    local Window = {}
+    ToggleBtn.MouseButton1Click:Connect(function()
+        ScreenGui:FindFirstChild("MainFrame").Visible = not ScreenGui:FindFirstChild("MainFrame").Visible
+    end)
+    
+    -- Draggable
+    local dragging = false
+    local dragInput, mousePos, framePos
+    
+    ToggleBtn.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            mousePos = input.Position
+            framePos = ToggleBtn.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    ToggleBtn.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - mousePos
+            ToggleBtn.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+        end
+    end)
+    
+    return ToggleBtn
+end
+
+return SpectrumUIlocal Window = {}
     Window.Tabs = {}
     Window.CurrentTab = nil
     
@@ -172,7 +210,7 @@ function SpectrumUI:CreateWindow(config)
         ScrollingFrame.BackgroundTransparency = 1
         ScrollingFrame.BorderSizePixel = 0
         ScrollingFrame.ScrollBarThickness = 4
-        ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(25, 25, 112)
+        ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(128, 0, 0)
         ScrollingFrame.Parent = TabFrame
         
         local ContentLayout = Instance.new("UIListLayout")
@@ -223,7 +261,7 @@ function SpectrumUI:CreateWindow(config)
             end
             
             TabFrame.Visible = true
-            TabButton.BackgroundColor3 = Color3.fromRGB(25, 25, 112)
+            TabButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
             TabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
         end)
         
@@ -254,7 +292,7 @@ function SpectrumUI:CreateWindow(config)
             ButtonCorner.Parent = ButtonFrame
             
             local ButtonLabel = Instance.new("TextLabel")
-            ButtonLabel.Size = UDim2.new(1, -20, 1, 0)
+            ButtonLabel.Size = UDim2.new(1, -50, 1, 0)
             ButtonLabel.Position = UDim2.new(0, 10, 0, 0)
             ButtonLabel.BackgroundTransparency = 1
             ButtonLabel.Text = btnConfig.Name or "Button"
@@ -264,12 +302,22 @@ function SpectrumUI:CreateWindow(config)
             ButtonLabel.TextXAlignment = Enum.TextXAlignment.Center
             ButtonLabel.Parent = ButtonFrame
             
+            -- Ícone de click
+            local ClickIcon = Instance.new("TextLabel")
+            ClickIcon.Size = UDim2.new(0, 30, 0, 30)
+            ClickIcon.Position = UDim2.new(1, -35, 0.5, -15)
+            ClickIcon.BackgroundTransparency = 1
+            ClickIcon.Text = "👆"
+            ClickIcon.Font = Enum.Font.GothamBold
+            ClickIcon.TextSize = 18
+            ClickIcon.Parent = ButtonFrame
+            
             ButtonFrame.MouseEnter:Connect(function()
-                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(55, 140, 255)}):Play()
+                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(220, 50, 50)}):Play()
             end)
             
             ButtonFrame.MouseLeave:Connect(function()
-                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(45, 120, 255)}):Play()
+                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(178, 34, 34)}):Play()
             end)
             
             ButtonFrame.MouseButton1Click:Connect(function()
@@ -339,7 +387,7 @@ function SpectrumUI:CreateWindow(config)
             local isEnabled = toggleConfig.Default or false
             
             if isEnabled then
-                ToggleButton.BackgroundColor3 = Color3.fromRGB(25, 25, 112)
+                ToggleButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
                 Circle.Position = UDim2.new(1, -22, 0.5, -9.5)
             end
             
@@ -347,7 +395,7 @@ function SpectrumUI:CreateWindow(config)
                 isEnabled = not isEnabled
                 
                 if isEnabled then
-                    TweenService:Create(ToggleButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 112)}):Play()
+                    TweenService:Create(ToggleButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(128, 0, 0)}):Play()
                     TweenService:Create(Circle, TweenInfo.new(0.2), {Position = UDim2.new(1, -22, 0.5, -9.5)}):Play()
                 else
                     TweenService:Create(ToggleButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(60, 60, 70)}):Play()
@@ -538,7 +586,7 @@ function SpectrumUI:CreateToggleButton(config)
     local ToggleBtn = Instance.new("ImageButton")
     ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
     ToggleBtn.Position = UDim2.new(0, 20, 0.5, -25)
-    ToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 112)
+    ToggleBtn.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
     ToggleBtn.Image = config.Icon or "rbxassetid://7733954760"
     ToggleBtn.ImageColor3 = Color3.fromRGB(255, 255, 255)
     ToggleBtn.Parent = ScreenGui
@@ -551,9 +599,7 @@ function SpectrumUI:CreateToggleButton(config)
     BtnStroke.Color = Color3.fromRGB(255, 255, 255)
     BtnStroke.Thickness = 2
     BtnStroke.Transparency = 0.8
-    BtnStroke.Parent = ToggleBtn
-    
-    ToggleBtn.MouseButton1Click:Connect(function()
+    BtnStroke.Parent = ToggleBtn.MouseButton1Click:Connect(function()
         ScreenGui:FindFirstChild("MainFrame").Visible = not ScreenGui:FindFirstChild("MainFrame").Visible
     end)
     
