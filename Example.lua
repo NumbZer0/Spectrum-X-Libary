@@ -602,3 +602,236 @@ return SpectrumUI
                 end
             end)
         end
+
+        -- Função para criar Input
+        function Tab:Input(inputConfig)
+            local InputFrame = Instance.new("Frame")
+            InputFrame.Size = UDim2.new(1, 0, 0, 70)
+            InputFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+            InputFrame.BorderSizePixel = 0
+            InputFrame.Parent = ScrollingFrame
+            
+            local InputCorner = Instance.new("UICorner")
+            InputCorner.CornerRadius = UDim.new(0, 10)
+            InputCorner.Parent = InputFrame
+            
+            local InputLabel = Instance.new("TextLabel")
+            InputLabel.Size = UDim2.new(1, -20, 0, 20)
+            InputLabel.Position = UDim2.new(0, 12, 0, 8)
+            InputLabel.BackgroundTransparency = 1
+            InputLabel.Text = inputConfig.Name or "Input"
+            InputLabel.Font = Enum.Font.GothamBold
+            InputLabel.TextSize = 13
+            InputLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            InputLabel.TextXAlignment = Enum.TextXAlignment.Left
+            InputLabel.Parent = InputFrame
+            
+            local InputBox = Instance.new("TextBox")
+            InputBox.Size = UDim2.new(1, -24, 0, 30)
+            InputBox.Position = UDim2.new(0, 12, 0, 32)
+            InputBox.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+            InputBox.BorderSizePixel = 0
+            InputBox.Text = inputConfig.Default or ""
+            InputBox.PlaceholderText = inputConfig.Placeholder or "Enter text..."
+            InputBox.Font = Enum.Font.Gotham
+            InputBox.TextSize = 12
+            InputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+            InputBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+            InputBox.Parent = InputFrame
+            
+            local InputBoxCorner = Instance.new("UICorner")
+            InputBoxCorner.CornerRadius = UDim.new(0, 8)
+            InputBoxCorner.Parent = InputBox
+            
+            InputBox.FocusLost:Connect(function()
+                if inputConfig.Callback then
+                    inputConfig.Callback(InputBox.Text)
+                end
+            end)
+        end
+        
+        -- Função para criar Dropdown
+        function Tab:Dropdown(dropConfig)
+            local DropdownFrame = Instance.new("Frame")
+            DropdownFrame.Size = UDim2.new(1, 0, 0, 45)
+            DropdownFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+            DropdownFrame.BorderSizePixel = 0
+            DropdownFrame.Parent = ScrollingFrame
+            
+            local DropCorner = Instance.new("UICorner")
+            DropCorner.CornerRadius = UDim.new(0, 10)
+            DropCorner.Parent = DropdownFrame
+            
+            local DropButton = Instance.new("TextButton")
+            DropButton.Size = UDim2.new(1, -24, 0, 35)
+            DropButton.Position = UDim2.new(0, 12, 0, 5)
+            DropButton.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+            DropButton.Text = ""
+            DropButton.Parent = DropdownFrame
+            
+            local DropBtnCorner = Instance.new("UICorner")
+            DropBtnCorner.CornerRadius = UDim.new(0, 8)
+            DropBtnCorner.Parent = DropButton
+            
+            local DropLabel = Instance.new("TextLabel")
+            DropLabel.Size = UDim2.new(1, -40, 1, 0)
+            DropLabel.Position = UDim2.new(0, 12, 0, 0)
+            DropLabel.BackgroundTransparency = 1
+            DropLabel.Text = dropConfig.Default or dropConfig.Name or "Select..."
+            DropLabel.Font = Enum.Font.GothamBold
+            DropLabel.TextSize = 12
+            DropLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            DropLabel.TextXAlignment = Enum.TextXAlignment.Left
+            DropLabel.Parent = DropButton
+            
+            local Arrow = Instance.new("TextLabel")
+            Arrow.Size = UDim2.new(0, 20, 1, 0)
+            Arrow.Position = UDim2.new(1, -25, 0, 0)
+            Arrow.BackgroundTransparency = 1
+            Arrow.Text = "▼"
+            Arrow.Font = Enum.Font.GothamBold
+            Arrow.TextSize = 10
+            Arrow.TextColor3 = Color3.fromRGB(200, 200, 200)
+            Arrow.Parent = DropButton
+            
+            local OptionsList = Instance.new("Frame")
+            OptionsList.Size = UDim2.new(1, -24, 0, 0)
+            OptionsList.Position = UDim2.new(0, 12, 0, 45)
+            OptionsList.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+            OptionsList.BorderSizePixel = 0
+            OptionsList.Visible = false
+            OptionsList.ClipsDescendants = true
+            OptionsList.Parent = DropdownFrame
+            
+            local OptionsCorner = Instance.new("UICorner")
+            OptionsCorner.CornerRadius = UDim.new(0, 8)
+            OptionsCorner.Parent = OptionsList
+            
+            local OptionsLayout = Instance.new("UIListLayout")
+            OptionsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+            OptionsLayout.Parent = OptionsList
+            
+            local isOpen = false
+            
+            DropButton.MouseButton1Click:Connect(function()
+                isOpen = not isOpen
+                
+                if isOpen then
+                    local targetSize = #(dropConfig.Options or {}) * 30
+                    OptionsList.Visible = true
+                    TweenService:Create(DropdownFrame, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 45 + targetSize + 5)}):Play()
+                    TweenService:Create(OptionsList, TweenInfo.new(0.2), {Size = UDim2.new(1, -24, 0, targetSize)}):Play()
+                    TweenService:Create(Arrow, TweenInfo.new(0.2), {Rotation = 180}):Play()
+                else
+                    TweenService:Create(DropdownFrame, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 45)}):Play()
+                    TweenService:Create(OptionsList, TweenInfo.new(0.2), {Size = UDim2.new(1, -24, 0, 0)}):Play()
+                    TweenService:Create(Arrow, TweenInfo.new(0.2), {Rotation = 0}):Play()
+                    task.wait(0.2)
+                    OptionsList.Visible = false
+                end
+            end)
+            
+            for _, option in pairs(dropConfig.Options or {}) do
+                local OptionButton = Instance.new("TextButton")
+                OptionButton.Size = UDim2.new(1, 0, 0, 30)
+                OptionButton.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+                OptionButton.Text = option
+                OptionButton.Font = Enum.Font.Gotham
+                OptionButton.TextSize = 11
+                OptionButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+                OptionButton.TextXAlignment = Enum.TextXAlignment.Left
+                OptionButton.Parent = OptionsList
+                
+                local OptionPadding = Instance.new("UIPadding")
+                OptionPadding.PaddingLeft = UDim.new(0, 12)
+                OptionPadding.Parent = OptionButton
+                
+                OptionButton.MouseEnter:Connect(function()
+                    OptionButton.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+                end)
+                
+                OptionButton.MouseLeave:Connect(function()
+                    OptionButton.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+                end)
+                
+                OptionButton.MouseButton1Click:Connect(function()
+                    DropLabel.Text = option
+                    isOpen = false
+                    TweenService:Create(DropdownFrame, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 45)}):Play()
+                    TweenService:Create(OptionsList, TweenInfo.new(0.2), {Size = UDim2.new(1, -24, 0, 0)}):Play()
+                    TweenService:Create(Arrow, TweenInfo.new(0.2), {Rotation = 0}):Play()
+                    task.wait(0.2)
+                    OptionsList.Visible = false
+                    
+                    if dropConfig.Callback then
+                        dropConfig.Callback(option)
+                    end
+                end)
+            end
+        end
+        
+        return Tab
+    end
+    
+    return Window
+end
+
+-- Função para criar Toggle UI Button (botão flutuante)
+function SpectrumUI:CreateToggleButton(config)
+    local ToggleBtn = Instance.new("ImageButton")
+    ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
+    ToggleBtn.Position = UDim2.new(0, 20, 0.5, -25)
+    ToggleBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 112)
+    ToggleBtn.Image = config.Icon or "rbxassetid://7733954760"
+    ToggleBtn.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleBtn.Parent = ScreenGui
+    
+    local BtnCorner = Instance.new("UICorner")
+    BtnCorner.CornerRadius = UDim.new(1, 0)
+    BtnCorner.Parent = ToggleBtn
+    
+    local BtnStroke = Instance.new("UIStroke")
+    BtnStroke.Color = Color3.fromRGB(255, 255, 255)
+    BtnStroke.Thickness = 2
+    BtnStroke.Transparency = 0.8
+    BtnStroke.Parent = ToggleBtn
+    
+    ToggleBtn.MouseButton1Click:Connect(function()
+        ScreenGui:FindFirstChild("MainFrame").Visible = not ScreenGui:FindFirstChild("MainFrame").Visible
+    end)
+    
+    -- Draggable
+    local dragging = false
+    local dragInput, mousePos, framePos
+    
+    ToggleBtn.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            mousePos = input.Position
+            framePos = ToggleBtn.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    ToggleBtn.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - mousePos
+            ToggleBtn.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+        end
+    end)
+    
+    return ToggleBtn
+end
+
+return SpectrumUI
