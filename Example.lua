@@ -59,7 +59,7 @@ function SpectrumUI:CreateWindow(config)
     local HeaderFix = Instance.new("Frame")
     HeaderFix.Size = UDim2.new(1, 0, 0, 15)
     HeaderFix.Position = UDim2.new(0, 0, 1, -15)
-    HeaderFix.BackgroundColor3 = Color3.fromRGB(25, 25, 112)
+    HeaderFix.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
     HeaderFix.BorderSizePixel = 0
     HeaderFix.Parent = Header
     
@@ -236,7 +236,7 @@ function SpectrumUI:CreateWindow(config)
         -- Mostrar primeira tab
         if #Window.Tabs == 1 then
             TabFrame.Visible = true
-            TabButton.BackgroundColor3 = Color3.fromRGB(25, 25, 112)
+            TabButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
             TabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
         end
         
