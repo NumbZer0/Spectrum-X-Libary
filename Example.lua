@@ -48,7 +48,7 @@ function SpectrumUI:CreateWindow(config)
     -- Header
     local Header = Instance.new("Frame")
     Header.Size = UDim2.new(1, 0, 0, 45)
-    Header.BackgroundColor3 = Color3.fromRGB(25, 25, 112)
+    Header.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
     Header.BorderSizePixel = 0
     Header.Parent = MainFrame
     
@@ -244,7 +244,7 @@ function SpectrumUI:CreateWindow(config)
         function Tab:Button(btnConfig)
             local ButtonFrame = Instance.new("TextButton")
             ButtonFrame.Size = UDim2.new(1, 0, 0, 40)
-            ButtonFrame.BackgroundColor3 = Color3.fromRGB(45, 120, 255)
+            ButtonFrame.BackgroundColor3 = Color3.fromRGB(178, 34, 34)
             ButtonFrame.Text = ""
             ButtonFrame.AutoButtonColor = false
             ButtonFrame.Parent = ScrollingFrame
