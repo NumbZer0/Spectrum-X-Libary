@@ -529,8 +529,8 @@ function SpectrumUI:CreateWindow(config)
             InputLabel.Parent = InputFrame
 
             local InputBox = Instance.new("TextBox")
-            InputBox.Size = UDim2.new(1, -24, 0, 38)
-            InputBox.Position = UDim2.new(0, 12, 0, 25)
+            InputBox.Size = UDim2.new(1, -24, 0, 26)
+            InputBox.Position = UDim2.new(0, 12, 0, 28)
             InputBox.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
             InputBox.BorderSizePixel = 0
             InputBox.Text = inputConfig.Default or ""
@@ -687,6 +687,20 @@ function SpectrumUI:CreateWindow(config)
 end
 
 function SpectrumUI:CreateToggleButton(config)
+    -- Procura o ScreenGui principal!
+    local screenGui = game:GetService("CoreGui"):FindFirstChild("SpectrumUI")
+    if not screenGui then
+        screenGui = Instance.new("ScreenGui")
+        screenGui.Name = "SpectrumUI"
+        screenGui.ResetOnSpawn = false
+        screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        screenGui.Parent = game:GetService("CoreGui")
+    end
+
+    -- Evita duplicata!
+    local oldBtn = screenGui:FindFirstChild("ToggleBtn")
+    if oldBtn then oldBtn:Destroy() end
+
     local ToggleBtn = Instance.new("ImageButton")
     ToggleBtn.Name = "ToggleBtn"
     ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
@@ -698,7 +712,7 @@ function SpectrumUI:CreateToggleButton(config)
     ToggleBtn.Image = config.Icon or "rbxassetid://7733954760"
     ToggleBtn.ImageColor3 = Color3.fromRGB(255, 255, 255)
     ToggleBtn.ZIndex = 9999
-    ToggleBtn.Parent = game:GetService("CoreGui")
+    ToggleBtn.Parent = screenGui
 
     local BtnCorner = Instance.new("UICorner")
     BtnCorner.CornerRadius = UDim.new(1, 0)
@@ -741,7 +755,7 @@ function SpectrumUI:CreateToggleButton(config)
     end)
 
     ToggleBtn.MouseButton1Click:Connect(function()
-        local MainFrame = game:GetService("CoreGui"):FindFirstChild("SpectrumUI"):FindFirstChild("MainFrame")
+        local MainFrame = screenGui:FindFirstChild("MainFrame")
         if MainFrame then
             MainFrame.Visible = not MainFrame.Visible
         end
