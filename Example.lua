@@ -2,6 +2,7 @@
 local SpectrumUI = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
+local TextService = game:GetService("TextService")
 
 local function makeHeaderDraggable(header, frame)
     local dragging = false
@@ -185,7 +186,7 @@ function SpectrumUI:CreateWindow(config)
     SidebarCorner.Parent = Sidebar
 
     local TabList = Instance.new("UIListLayout")
-    TabList.Padding = UDim.new(0, 8)
+    TabList.Padding = UDim.new(0, 14) -- Mais espaço entre elementos
     TabList.SortOrder = Enum.SortOrder.LayoutOrder
     TabList.Parent = Sidebar
 
@@ -245,15 +246,15 @@ function SpectrumUI:CreateWindow(config)
         ScrollingFrame.Parent = TabFrame
 
         local ContentLayout = Instance.new("UIListLayout")
-        ContentLayout.Padding = UDim.new(0, 10)
+        ContentLayout.Padding = UDim.new(0, 14) -- Mais espaço entre elementos
         ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
         ContentLayout.Parent = ScrollingFrame
 
         local ContentPadding = Instance.new("UIPadding")
         ContentPadding.PaddingTop = UDim.new(0, 10)
+        ContentPadding.PaddingBottom = UDim.new(0, 14)
         ContentPadding.PaddingLeft = UDim.new(0, 10)
         ContentPadding.PaddingRight = UDim.new(0, 10)
-        ContentPadding.PaddingBottom = UDim.new(0, 10)
         ContentPadding.Parent = ScrollingFrame
 
         ContentLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
@@ -399,14 +400,15 @@ function SpectrumUI:CreateWindow(config)
 
         function Tab:Toggle(toggleConfig)
             local descText = toggleConfig.Description or ""
-            local lineCount = #descText:split("\n")
-            local hasLongDescription = lineCount > 1 or #descText > 60
+            local font = Enum.Font.Gotham
+            local textSize = 11
+            local maxWidth = 400 -- ajusta conforme seu layout
+            local textSizeData = TextService:GetTextSize(descText, textSize, font, Vector2.new(maxWidth, math.huge))
 
             local baseHeight = 40
-            local extraHeight = 28
-
+            local extraHeight = math.max(textSizeData.Y, 20)
             local ToggleFrame = Instance.new("Frame")
-            ToggleFrame.Size = UDim2.new(1, 0, 0, hasLongDescription and (baseHeight+extraHeight) or baseHeight)
+            ToggleFrame.Size = UDim2.new(1, 0, 0, baseHeight + extraHeight)
             ToggleFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
             ToggleFrame.BorderSizePixel = 0
             ToggleFrame.Parent = ScrollingFrame
@@ -420,21 +422,22 @@ function SpectrumUI:CreateWindow(config)
             ToggleLabel.Position = UDim2.new(0, 12, 0, 10)
             ToggleLabel.BackgroundTransparency = 1
             ToggleLabel.Text = toggleConfig.Name or "Toggle"
-            ToggleLabel.Font = Enum.Font.GothamBold
+            ToggleLabel.Font = font
             ToggleLabel.TextSize = 13
             ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
             ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
             ToggleLabel.Parent = ToggleFrame
 
             local ToggleDesc = Instance.new("TextLabel")
-            ToggleDesc.Size = UDim2.new(1, -65, 0, hasLongDescription and 30 or 20)
+            ToggleDesc.Size = UDim2.new(1, -65, 0, textSizeData.Y)
             ToggleDesc.Position = UDim2.new(0, 12, 0, 32)
             ToggleDesc.BackgroundTransparency = 1
-            ToggleDesc.Text = toggleConfig.Description or ""
-            ToggleDesc.Font = Enum.Font.Gotham
-            ToggleDesc.TextSize = 11
+            ToggleDesc.Text = descText
+            ToggleDesc.Font = font
+            ToggleDesc.TextSize = textSize
             ToggleDesc.TextColor3 = Color3.fromRGB(160, 160, 160)
             ToggleDesc.TextXAlignment = Enum.TextXAlignment.Left
+            ToggleDesc.TextYAlignment = Enum.TextYAlignment.Top
             ToggleDesc.TextWrapped = true
             ToggleDesc.Parent = ToggleFrame
 
