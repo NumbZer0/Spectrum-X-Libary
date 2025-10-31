@@ -1,4 +1,4 @@
--- ========== SPECTRUM UI LIBRARY V1.2 ==========
+-- ========== SPECTRUM UI LIBRARY V1.3 ==========
 local SpectrumUI = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -61,6 +61,15 @@ function SpectrumUI:CreateWindow(config)
     MainCorner.CornerRadius = UDim.new(0, 15)
     MainCorner.Parent = MainFrame
 
+    -- Gradiente no MainFrame (vermelho escuro para preto)
+    local MainGradient = Instance.new("UIGradient")
+    MainGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(128,0,0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,0))
+    }
+    MainGradient.Rotation = 90
+    MainGradient.Parent = MainFrame
+
     -- Sombra
     local Shadow = Instance.new("ImageLabel")
     Shadow.Size = UDim2.new(1, 40, 1, 40)
@@ -84,6 +93,15 @@ function SpectrumUI:CreateWindow(config)
     local HeaderCorner = Instance.new("UICorner")
     HeaderCorner.CornerRadius = UDim.new(0, 15)
     HeaderCorner.Parent = Header
+
+    -- Gradiente no Header (vermelho escuro para preto)
+    local HeaderGradient = Instance.new("UIGradient")
+    HeaderGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(128,0,0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,0))
+    }
+    HeaderGradient.Rotation = 90
+    HeaderGradient.Parent = Header
 
     local HeaderFix = Instance.new("Frame")
     HeaderFix.Size = UDim2.new(1, 0, 0, 15)
@@ -357,7 +375,7 @@ function SpectrumUI:CreateWindow(config)
             title.Text = noticeConfig.Title or "Aviso"
             title.Font = Enum.Font.GothamBold
             title.TextSize = 15
-            title.TextColor3 = Color3.fromRGB(90, 60, 25)
+            title.TextColor3 = Color3.fromRGB(255,255,255) -- Destacado em branco!
             title.TextXAlignment = Enum.TextXAlignment.Left
             title.Parent = frame
 
@@ -369,7 +387,7 @@ function SpectrumUI:CreateWindow(config)
                 subtitle.Text = noticeConfig.Subtitle
                 subtitle.Font = Enum.Font.Gotham
                 subtitle.TextSize = 12
-                subtitle.TextColor3 = Color3.fromRGB(120, 90, 50)
+                subtitle.TextColor3 = Color3.fromRGB(255,255,255) -- Destacado em branco!
                 subtitle.TextXAlignment = Enum.TextXAlignment.Left
                 subtitle.TextWrapped = true
                 subtitle.Parent = frame
