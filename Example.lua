@@ -407,11 +407,11 @@ function SpectrumUI:CreateWindow(config)
             local descText = toggleConfig.Description or ""
             local font = Enum.Font.Gotham
             local textSize = 11
-            local descWidth = 320 -- ajusta conforme seu layout
-            local descHeight = getTextHeight(descText, font, textSize, descWidth)
+            local descWidth = 320
+            local descHeight = TextService:GetTextSize(descText, textSize, font, Vector2.new(descWidth, math.huge)).Y
             local baseHeight = 40
-            local minHeight = 24
-            local totalHeight = baseHeight + math.max(descHeight, minHeight)
+            local minDescHeight = 22 -- nunca menor que isso!
+            local totalHeight = baseHeight + math.max(descHeight, minDescHeight)
 
             local ToggleFrame = Instance.new("Frame")
             ToggleFrame.Size = UDim2.new(1, 0, 0, totalHeight)
@@ -428,14 +428,14 @@ function SpectrumUI:CreateWindow(config)
             ToggleLabel.Position = UDim2.new(0, 12, 0, 10)
             ToggleLabel.BackgroundTransparency = 1
             ToggleLabel.Text = toggleConfig.Name or "Toggle"
-            ToggleLabel.Font = font
+            ToggleLabel.Font = Enum.Font.GothamBold
             ToggleLabel.TextSize = 13
             ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
             ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
             ToggleLabel.Parent = ToggleFrame
 
             local ToggleDesc = Instance.new("TextLabel")
-            ToggleDesc.Size = UDim2.new(1, -65, 0, descHeight)
+            ToggleDesc.Size = UDim2.new(1, -65, 0, math.max(descHeight, minDescHeight))
             ToggleDesc.Position = UDim2.new(0, 12, 0, 32)
             ToggleDesc.BackgroundTransparency = 1
             ToggleDesc.Text = descText
@@ -687,7 +687,6 @@ function SpectrumUI:CreateWindow(config)
 end
 
 function SpectrumUI:CreateToggleButton(config)
-    -- Procura o ScreenGui principal!
     local screenGui = game:GetService("CoreGui"):FindFirstChild("SpectrumUI")
     if not screenGui then
         screenGui = Instance.new("ScreenGui")
@@ -697,7 +696,6 @@ function SpectrumUI:CreateToggleButton(config)
         screenGui.Parent = game:GetService("CoreGui")
     end
 
-    -- Evita duplicata!
     local oldBtn = screenGui:FindFirstChild("ToggleBtn")
     if oldBtn then oldBtn:Destroy() end
 
