@@ -1,4 +1,4 @@
--- ========== SPECTRUM UI LIBRARY V1.8 CUSTOM ==========
+-- ========== SPECTRUM UI LIBRARY V1.8 FINAL CORRIGIDA ==========
 local SpectrumUI = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -502,7 +502,7 @@ function SpectrumUI:CreateWindow(config)
 
         function Tab:Input(inputConfig)
             local InputFrame = Instance.new("Frame")
-            InputFrame.Size = UDim2.new(1, 0, 0, 50)
+            InputFrame.Size = UDim2.new(1, 0, 0, 65)
             InputFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
             InputFrame.BorderSizePixel = 0
             InputFrame.Parent = ScrollingFrame
@@ -529,8 +529,8 @@ function SpectrumUI:CreateWindow(config)
             InputLabel.Parent = InputFrame
 
             local InputBox = Instance.new("TextBox")
-            InputBox.Size = UDim2.new(1, -24, 0, 30)
-            InputBox.Position = UDim2.new(0, 12, 0, 32)
+            InputBox.Size = UDim2.new(1, -24, 0, 38)
+            InputBox.Position = UDim2.new(0, 12, 0, 25)
             InputBox.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
             InputBox.BorderSizePixel = 0
             InputBox.Text = inputConfig.Default or ""
