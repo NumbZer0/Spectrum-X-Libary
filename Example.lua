@@ -1,4 +1,4 @@
--- ========== SPECTRUM UI LIBRARY V1.5 ==========
+-- ========== SPECTRUM UI LIBRARY V1.7 ==========
 local SpectrumUI = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -29,10 +29,17 @@ local function makeHeaderDraggable(header, frame)
     end)
 end
 
+-- Só aplica transparência em containers principais
 local function applyTransparency(parent, transparency)
     for _, obj in ipairs(parent:GetDescendants()) do
-        if (obj:IsA("Frame") or obj:IsA("TextButton") or obj:IsA("ImageLabel") or obj:IsA("ScrollingFrame") or obj:IsA("ImageButton"))
-        and not (obj:IsA("TextLabel") or obj:IsA("TextBox") or obj.Name == "Circle") then
+        if obj:IsA("Frame") or obj:IsA("TextButton") or obj:IsA("ScrollingFrame") then
+            obj.BackgroundTransparency = transparency
+        end
+        if obj:IsA("ImageLabel") and obj.Name == "LogoImg" then
+            obj.BackgroundTransparency = 1
+            obj.ImageTransparency = 0.25
+        end
+        if obj:IsA("ImageButton") and obj.Name == "ToggleBtn" then
             obj.BackgroundTransparency = transparency
         end
     end
@@ -107,6 +114,7 @@ function SpectrumUI:CreateWindow(config)
     -- Logo atrás do título/subtítulo (se fornecido)
     if config.LogoId then
         local LogoImg = Instance.new("ImageLabel")
+        LogoImg.Name = "LogoImg"
         LogoImg.Size = UDim2.new(0, 38, 0, 38)
         LogoImg.Position = UDim2.new(0, 10, 0.5, -19)
         LogoImg.BackgroundTransparency = 1
@@ -181,7 +189,6 @@ function SpectrumUI:CreateWindow(config)
     local ContentContainer = Instance.new("Frame")
     ContentContainer.Size = UDim2.new(1, -170, 1, -75)
     ContentContainer.Position = UDim2.new(0, 160, 0, 70)
-    ContentContainer.BackgroundTransparency = transparency
     ContentContainer.Parent = MainFrame
 
     local isMinimized = false
@@ -206,7 +213,6 @@ function SpectrumUI:CreateWindow(config)
         end
     end)
 
-    -- Aplica transparência nos backgrounds exceto textos e toggles
     applyTransparency(MainFrame, transparency)
 
     function Window:CreateTab(tabConfig)
@@ -215,13 +221,10 @@ function SpectrumUI:CreateWindow(config)
 
         local TabFrame = Instance.new("Frame")
         TabFrame.Size = UDim2.new(1, 0, 1, 0)
-        TabFrame.BackgroundTransparency = transparency
-        TabFrame.Visible = false
         TabFrame.Parent = ContentContainer
 
         local ScrollingFrame = Instance.new("ScrollingFrame")
         ScrollingFrame.Size = UDim2.new(1, 0, 1, 0)
-        ScrollingFrame.BackgroundTransparency = transparency
         ScrollingFrame.BorderSizePixel = 0
         ScrollingFrame.ScrollBarThickness = 4
         ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(128, 0, 0)
@@ -246,7 +249,6 @@ function SpectrumUI:CreateWindow(config)
         local TabButton = Instance.new("TextButton")
         TabButton.Size = UDim2.new(1, 0, 0, 35)
         TabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-        TabButton.BackgroundTransparency = transparency
         TabButton.Text = ""
         TabButton.AutoButtonColor = false
         TabButton.Parent = Sidebar
@@ -270,13 +272,11 @@ function SpectrumUI:CreateWindow(config)
             for _, tab in pairs(Window.Tabs) do
                 tab.Frame.Visible = false
                 tab.Button.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-                tab.Button.BackgroundTransparency = transparency
                 tab.Label.TextColor3 = Color3.fromRGB(200, 200, 200)
             end
 
             TabFrame.Visible = true
             TabButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
-            TabButton.BackgroundTransparency = transparency
             TabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
         end)
 
@@ -289,7 +289,6 @@ function SpectrumUI:CreateWindow(config)
         if #Window.Tabs == 1 then
             TabFrame.Visible = true
             TabButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
-            TabButton.BackgroundTransparency = transparency
             TabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
         end
 
@@ -297,7 +296,6 @@ function SpectrumUI:CreateWindow(config)
             local ButtonFrame = Instance.new("TextButton")
             ButtonFrame.Size = UDim2.new(1, 0, 0, 40)
             ButtonFrame.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
-            ButtonFrame.BackgroundTransparency = transparency
             ButtonFrame.Text = ""
             ButtonFrame.AutoButtonColor = false
             ButtonFrame.Parent = ScrollingFrame
@@ -320,7 +318,7 @@ function SpectrumUI:CreateWindow(config)
             local ClickIcon = Instance.new("ImageLabel")
             ClickIcon.Size = UDim2.new(0, 26, 0, 26)
             ClickIcon.Position = UDim2.new(1, -32, 0.5, -13)
-            ClickIcon.BackgroundTransparency = transparency
+            ClickIcon.BackgroundTransparency = 1
             ClickIcon.Image = btnConfig.ClickIconId or "rbxassetid://10366495969"
             ClickIcon.Parent = ButtonFrame
 
@@ -343,7 +341,6 @@ function SpectrumUI:CreateWindow(config)
             local frame = Instance.new("Frame")
             frame.Size = UDim2.new(1, 0, 0, 60)
             frame.BackgroundColor3 = noticeConfig.Color or Color3.fromRGB(255, 230, 180)
-            frame.BackgroundTransparency = transparency
             frame.BorderSizePixel = 0
             frame.Parent = ScrollingFrame
 
@@ -354,7 +351,7 @@ function SpectrumUI:CreateWindow(config)
             local icon = Instance.new("ImageLabel")
             icon.Size = UDim2.new(0, 34, 0, 34)
             icon.Position = UDim2.new(0, 10, 0, 13)
-            icon.BackgroundTransparency = transparency
+            icon.BackgroundTransparency = 1
             icon.Image = "rbxassetid://4871684504"
             icon.Parent = frame
 
@@ -388,7 +385,6 @@ function SpectrumUI:CreateWindow(config)
             local ToggleFrame = Instance.new("Frame")
             ToggleFrame.Size = UDim2.new(1, 0, 0, 70)
             ToggleFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-            ToggleFrame.BackgroundTransparency = transparency
             ToggleFrame.BorderSizePixel = 0
             ToggleFrame.Parent = ScrollingFrame
 
@@ -423,7 +419,6 @@ function SpectrumUI:CreateWindow(config)
             ToggleButton.Size = UDim2.new(0, 45, 0, 25)
             ToggleButton.Position = UDim2.new(1, -55, 0, 10)
             ToggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
-            ToggleButton.BackgroundTransparency = 0
             ToggleButton.Text = ""
             ToggleButton.Parent = ToggleFrame
 
@@ -436,7 +431,6 @@ function SpectrumUI:CreateWindow(config)
             Circle.Size = UDim2.new(0, 19, 0, 19)
             Circle.Position = UDim2.new(0, 3, 0.5, -9.5)
             Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            Circle.BackgroundTransparency = 0
             Circle.BorderSizePixel = 0
             Circle.Parent = ToggleButton
 
@@ -472,7 +466,6 @@ function SpectrumUI:CreateWindow(config)
             local InputFrame = Instance.new("Frame")
             InputFrame.Size = UDim2.new(1, 0, 0, 70)
             InputFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-            InputFrame.BackgroundTransparency = transparency
             InputFrame.BorderSizePixel = 0
             InputFrame.Parent = ScrollingFrame
 
@@ -495,7 +488,6 @@ function SpectrumUI:CreateWindow(config)
             InputBox.Size = UDim2.new(1, -24, 0, 30)
             InputBox.Position = UDim2.new(0, 12, 0, 32)
             InputBox.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
-            InputBox.BackgroundTransparency = transparency
             InputBox.BorderSizePixel = 0
             InputBox.Text = inputConfig.Default or ""
             InputBox.PlaceholderText = inputConfig.Placeholder or "Enter text..."
@@ -503,6 +495,7 @@ function SpectrumUI:CreateWindow(config)
             InputBox.TextSize = 12
             InputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
             InputBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+            InputBox.BackgroundTransparency = 0
             InputBox.Parent = InputFrame
 
             local InputBoxCorner = Instance.new("UICorner")
@@ -520,7 +513,6 @@ function SpectrumUI:CreateWindow(config)
             local DropdownFrame = Instance.new("Frame")
             DropdownFrame.Size = UDim2.new(1, 0, 0, 45)
             DropdownFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-            DropdownFrame.BackgroundTransparency = transparency
             DropdownFrame.BorderSizePixel = 0
             DropdownFrame.Parent = ScrollingFrame
 
@@ -532,7 +524,6 @@ function SpectrumUI:CreateWindow(config)
             DropButton.Size = UDim2.new(1, -24, 0, 35)
             DropButton.Position = UDim2.new(0, 12, 0, 5)
             DropButton.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
-            DropButton.BackgroundTransparency = transparency
             DropButton.Text = ""
             DropButton.Parent = DropdownFrame
 
@@ -565,7 +556,6 @@ function SpectrumUI:CreateWindow(config)
             OptionsList.Size = UDim2.new(1, -24, 0, 0)
             OptionsList.Position = UDim2.new(0, 12, 0, 45)
             OptionsList.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-            OptionsList.BackgroundTransparency = transparency
             OptionsList.BorderSizePixel = 0
             OptionsList.Visible = false
             OptionsList.ClipsDescendants = true
@@ -603,7 +593,6 @@ function SpectrumUI:CreateWindow(config)
                 local OptionButton = Instance.new("TextButton")
                 OptionButton.Size = UDim2.new(1, 0, 0, 30)
                 OptionButton.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-                OptionButton.BackgroundTransparency = transparency
                 OptionButton.Text = option
                 OptionButton.Font = Enum.Font.Gotham
                 OptionButton.TextSize = 11
@@ -617,12 +606,10 @@ function SpectrumUI:CreateWindow(config)
 
                 OptionButton.MouseEnter:Connect(function()
                     OptionButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
-                    OptionButton.BackgroundTransparency = transparency
                 end)
 
                 OptionButton.MouseLeave:Connect(function()
                     OptionButton.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-                    OptionButton.BackgroundTransparency = transparency
                 end)
 
                 OptionButton.MouseButton1Click:Connect(function()
@@ -648,13 +635,12 @@ function SpectrumUI:CreateWindow(config)
 end
 
 function SpectrumUI:CreateToggleButton(config)
-    local transparency = typeof(config.Transparency) == "number" and math.clamp(config.Transparency, 0, 0.8) or 0.3
-
     local ToggleBtn = Instance.new("ImageButton")
+    ToggleBtn.Name = "ToggleBtn"
     ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
     ToggleBtn.Position = UDim2.new(0, 20, 0.5, -25)
     ToggleBtn.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
-    ToggleBtn.BackgroundTransparency = transparency
+    ToggleBtn.BackgroundTransparency = typeof(config.Transparency) == "number" and math.clamp(config.Transparency, 0, 0.8) or 0.3
     ToggleBtn.Image = config.Icon or "rbxassetid://7733954760"
     ToggleBtn.ImageColor3 = Color3.fromRGB(255, 255, 255)
     ToggleBtn.Parent = game:GetService("CoreGui")
