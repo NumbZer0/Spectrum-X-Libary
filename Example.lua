@@ -186,7 +186,7 @@ function SpectrumUI:CreateWindow(config)
     SidebarCorner.Parent = Sidebar
 
     local TabList = Instance.new("UIListLayout")
-    TabList.Padding = UDim.new(0, 14) -- Mais espaço entre elementos
+    TabList.Padding = UDim.new(0, 14)
     TabList.SortOrder = Enum.SortOrder.LayoutOrder
     TabList.Parent = Sidebar
 
@@ -246,7 +246,7 @@ function SpectrumUI:CreateWindow(config)
         ScrollingFrame.Parent = TabFrame
 
         local ContentLayout = Instance.new("UIListLayout")
-        ContentLayout.Padding = UDim.new(0, 14) -- Mais espaço entre elementos
+        ContentLayout.Padding = UDim.new(0, 14)
         ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
         ContentLayout.Parent = ScrollingFrame
 
@@ -402,11 +402,22 @@ function SpectrumUI:CreateWindow(config)
             local descText = toggleConfig.Description or ""
             local font = Enum.Font.Gotham
             local textSize = 11
-            local maxWidth = 400 -- ajusta conforme seu layout
-            local textSizeData = TextService:GetTextSize(descText, textSize, font, Vector2.new(maxWidth, math.huge))
+            local maxWidth = 400
+
+            -- Cria TextLabel temporário para calcular altura correta com wrap
+            local tempLabel = Instance.new("TextLabel")
+            tempLabel.Size = UDim2.new(1, -65, 0, 0)
+            tempLabel.Font = font
+            tempLabel.TextSize = textSize
+            tempLabel.TextWrapped = true
+            tempLabel.Text = descText
+            tempLabel.Parent = ScrollingFrame
+            -- O Parent é necessário para cálculo correto no Roblox
+            local calculatedTextSize = tempLabel.TextBounds
+            tempLabel:Destroy()
 
             local baseHeight = 40
-            local extraHeight = math.max(textSizeData.Y, 20)
+            local extraHeight = math.max(calculatedTextSize.Y, 20)
             local ToggleFrame = Instance.new("Frame")
             ToggleFrame.Size = UDim2.new(1, 0, 0, baseHeight + extraHeight)
             ToggleFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
@@ -429,7 +440,7 @@ function SpectrumUI:CreateWindow(config)
             ToggleLabel.Parent = ToggleFrame
 
             local ToggleDesc = Instance.new("TextLabel")
-            ToggleDesc.Size = UDim2.new(1, -65, 0, textSizeData.Y)
+            ToggleDesc.Size = UDim2.new(1, -65, 0, extraHeight)
             ToggleDesc.Position = UDim2.new(0, 12, 0, 32)
             ToggleDesc.BackgroundTransparency = 1
             ToggleDesc.Text = descText
@@ -496,7 +507,7 @@ function SpectrumUI:CreateWindow(config)
 
         function Tab:Input(inputConfig)
             local InputFrame = Instance.new("Frame")
-            InputFrame.Size = UDim2.new(1, 0, 0, 70)
+            InputFrame.Size = UDim2.new(1, 0, 0, 50)
             InputFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
             InputFrame.BorderSizePixel = 0
             InputFrame.Parent = ScrollingFrame
@@ -504,6 +515,12 @@ function SpectrumUI:CreateWindow(config)
             local InputCorner = Instance.new("UICorner")
             InputCorner.CornerRadius = UDim.new(0, 10)
             InputCorner.Parent = InputFrame
+
+            local InputStroke = Instance.new("UIStroke")
+            InputStroke.Color = Color3.fromRGB(60, 60, 70)
+            InputStroke.Thickness = 2
+            InputStroke.Transparency = 0.2
+            InputStroke.Parent = InputFrame
 
             local InputLabel = Instance.new("TextLabel")
             InputLabel.Size = UDim2.new(1, -20, 0, 20)
@@ -533,6 +550,12 @@ function SpectrumUI:CreateWindow(config)
             local InputBoxCorner = Instance.new("UICorner")
             InputBoxCorner.CornerRadius = UDim.new(0, 8)
             InputBoxCorner.Parent = InputBox
+
+            local InputBoxStroke = Instance.new("UIStroke")
+            InputBoxStroke.Color = Color3.fromRGB(60, 60, 70)
+            InputBoxStroke.Thickness = 2
+            InputBoxStroke.Transparency = 0.2
+            InputBoxStroke.Parent = InputBox
 
             InputBox.FocusLost:Connect(function()
                 if inputConfig.Callback then
