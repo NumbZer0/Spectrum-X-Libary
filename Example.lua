@@ -340,7 +340,7 @@ function SpectrumUI:CreateWindow(config)
             title.Text = noticeConfig.Title or "Aviso"
             title.Font = Enum.Font.GothamBold
             title.TextSize = 15
-            title.TextColor3 = Color3.fromRGB(90, 60, 25)
+            title.TextColor3 = Color3.fromRGB(255, 255, 255)
             title.TextXAlignment = Enum.TextXAlignment.Left
             title.Parent = frame
 
@@ -352,7 +352,7 @@ function SpectrumUI:CreateWindow(config)
                 subtitle.Text = noticeConfig.Subtitle
                 subtitle.Font = Enum.Font.Gotham
                 subtitle.TextSize = 12
-                subtitle.TextColor3 = Color3.fromRGB(120, 90, 50)
+                subtitle.TextColor3 = Color3.fromRGB(255, 255, 255)
                 subtitle.TextXAlignment = Enum.TextXAlignment.Left
                 subtitle.TextWrapped = true
                 subtitle.Parent = frame
