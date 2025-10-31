@@ -65,7 +65,7 @@ function SpectrumUI:CreateWindow(config)
     MainFrame.Name = "MainFrame"
     MainFrame.Size = UDim2.new(0, 550, 0, 350)
     MainFrame.Position = UDim2.new(0.5, -275, 0.5, -175)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
     MainFrame.BorderSizePixel = 0
     MainFrame.Active = true
     MainFrame.Visible = true
@@ -151,8 +151,9 @@ function SpectrumUI:CreateWindow(config)
     Subtitle.ZIndex = 2
     Subtitle.Parent = Header
 
-    -- Drag pelo header no mobile e PC!
+    -- Drag pelo header e subtitle
     makeHeaderDraggable(Header, MainFrame)
+    makeHeaderDraggable(Subtitle, MainFrame)
 
     local MinimizeButton = Instance.new("TextButton")
     MinimizeButton.Size = UDim2.new(0, 35, 0, 35)
@@ -171,7 +172,7 @@ function SpectrumUI:CreateWindow(config)
     local Sidebar = Instance.new("Frame")
     Sidebar.Size = UDim2.new(0, 140, 1, -75)
     Sidebar.Position = UDim2.new(0, 10, 0, 70)
-    Sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+    Sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
     Sidebar.BorderSizePixel = 0
     Sidebar.Parent = MainFrame
 
@@ -193,7 +194,7 @@ function SpectrumUI:CreateWindow(config)
     local ContentContainer = Instance.new("Frame")
     ContentContainer.Size = UDim2.new(1, -170, 1, -75)
     ContentContainer.Position = UDim2.new(0, 160, 0, 70)
-    ContentContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 25) -- PRETO IGUAL SIDEBAR!
+    ContentContainer.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
     ContentContainer.Parent = MainFrame
 
     local isMinimized = false
@@ -226,12 +227,12 @@ function SpectrumUI:CreateWindow(config)
 
         local TabFrame = Instance.new("Frame")
         TabFrame.Size = UDim2.new(1, 0, 1, 0)
-        TabFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25) -- PRETO
+        TabFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
         TabFrame.Parent = ContentContainer
 
         local ScrollingFrame = Instance.new("ScrollingFrame")
         ScrollingFrame.Size = UDim2.new(1, 0, 1, 0)
-        ScrollingFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+        ScrollingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
         ScrollingFrame.BorderSizePixel = 0
         ScrollingFrame.ScrollBarThickness = 4
         ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(128, 0, 0)
@@ -302,7 +303,7 @@ function SpectrumUI:CreateWindow(config)
         function Tab:Button(btnConfig)
             local ButtonFrame = Instance.new("TextButton")
             ButtonFrame.Size = UDim2.new(1, 0, 0, 40)
-            ButtonFrame.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
+            ButtonFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
             ButtonFrame.Text = ""
             ButtonFrame.AutoButtonColor = false
             ButtonFrame.Parent = ScrollingFrame
@@ -334,7 +335,7 @@ function SpectrumUI:CreateWindow(config)
             end)
 
             ButtonFrame.MouseLeave:Connect(function()
-                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(128, 0, 0)}):Play()
+                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 0, 0)}):Play()
             end)
 
             ButtonFrame.MouseButton1Click:Connect(function()
@@ -391,7 +392,7 @@ function SpectrumUI:CreateWindow(config)
         function Tab:Toggle(toggleConfig)
             local ToggleFrame = Instance.new("Frame")
             ToggleFrame.Size = UDim2.new(1, 0, 0, 70)
-            ToggleFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+            ToggleFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
             ToggleFrame.BorderSizePixel = 0
             ToggleFrame.Parent = ScrollingFrame
 
@@ -472,7 +473,7 @@ function SpectrumUI:CreateWindow(config)
         function Tab:Input(inputConfig)
             local InputFrame = Instance.new("Frame")
             InputFrame.Size = UDim2.new(1, 0, 0, 70)
-            InputFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+            InputFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
             InputFrame.BorderSizePixel = 0
             InputFrame.Parent = ScrollingFrame
 
@@ -519,7 +520,7 @@ function SpectrumUI:CreateWindow(config)
         function Tab:Dropdown(dropConfig)
             local DropdownFrame = Instance.new("Frame")
             DropdownFrame.Size = UDim2.new(1, 0, 0, 45)
-            DropdownFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+            DropdownFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
             DropdownFrame.BorderSizePixel = 0
             DropdownFrame.Parent = ScrollingFrame
 
@@ -645,10 +646,10 @@ function SpectrumUI:CreateToggleButton(config)
     local ToggleBtn = Instance.new("ImageButton")
     ToggleBtn.Name = "ToggleBtn"
     ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
-    ToggleBtn.Position = UDim2.new(1, -60, 0.5, -25) -- lado direito, meio vertical da tela
+    ToggleBtn.Position = UDim2.new(1, -60, 0.5, -25) -- lado direito, meio vertical
     ToggleBtn.AnchorPoint = Vector2.new(1, 0.5)
-    ToggleBtn.BackgroundColor3 = Color3.fromRGB(128, 0, 0) -- igual TAB selecionada
-    ToggleBtn.BackgroundTransparency = 0 -- sem cinza
+    ToggleBtn.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
+    ToggleBtn.BackgroundTransparency = 0
     ToggleBtn.Image = config.Icon or "rbxassetid://7733954760"
     ToggleBtn.ImageColor3 = Color3.fromRGB(255, 255, 255)
     ToggleBtn.ZIndex = 9999
