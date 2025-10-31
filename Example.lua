@@ -38,10 +38,6 @@ local function applyTransparency(parent, transparency)
         if obj:IsA("Frame") or obj:IsA("TextButton") or obj:IsA("ScrollingFrame") then
             obj.BackgroundTransparency = transparency
             obj.BorderSizePixel = 0
-            -- Remove UIStroke de tudo!
-            for _, child in ipairs(obj:GetChildren()) do
-                if child:IsA("UIStroke") then child:Destroy() end
-            end
         end
         if obj:IsA("ImageLabel") and obj.Name == "LogoImg" then
             obj.BackgroundTransparency = 1
@@ -50,9 +46,9 @@ local function applyTransparency(parent, transparency)
         if obj:IsA("ImageButton") and obj.Name == "ToggleBtn" then
             obj.BackgroundTransparency = transparency
             obj.BorderSizePixel = 0
-            for _, child in ipairs(obj:GetChildren()) do
-                if child:IsA("UIStroke") then child:Destroy() end
-            end
+        end
+        if obj:FindFirstChildWhichIsA("UIStroke") then
+            obj:FindFirstChildWhichIsA("UIStroke"):Destroy()
         end
     end
 end
@@ -314,10 +310,10 @@ function SpectrumUI:CreateWindow(config)
         function Tab:Button(btnConfig)
             local ButtonFrame = Instance.new("TextButton")
             ButtonFrame.Size = UDim2.new(1, 0, 0, 40)
-            ButtonFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-            ButtonFrame.BorderSizePixel = 0
+            ButtonFrame.BackgroundColor3 = btnConfig.BackgroundColor3 or Color3.fromRGB(128, 0, 0) -- COR DO USUÁRIO!
             ButtonFrame.Text = ""
             ButtonFrame.AutoButtonColor = false
+            ButtonFrame.BorderSizePixel = 0
             ButtonFrame.Parent = ScrollingFrame
 
             local ButtonCorner = Instance.new("UICorner")
@@ -343,11 +339,11 @@ function SpectrumUI:CreateWindow(config)
             ClickIcon.Parent = ButtonFrame
 
             ButtonFrame.MouseEnter:Connect(function()
-                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(160, 10, 10)}):Play()
+                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = btnConfig.HoverColor or ButtonFrame.BackgroundColor3}):Play()
             end)
 
             ButtonFrame.MouseLeave:Connect(function()
-                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 0, 0)}):Play()
+                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = btnConfig.BackgroundColor3 or Color3.fromRGB(128, 0, 0)}):Play()
             end)
 
             ButtonFrame.MouseButton1Click:Connect(function()
@@ -360,7 +356,7 @@ function SpectrumUI:CreateWindow(config)
         function Tab:Notice(noticeConfig)
             local frame = Instance.new("Frame")
             frame.Size = UDim2.new(1, 0, 0, 60)
-            frame.BackgroundColor3 = noticeConfig.Color or Color3.fromRGB(255, 230, 180)
+            frame.BackgroundColor3 = noticeConfig.Color or Color3.fromRGB(255, 230, 180) -- COR DO USUÁRIO!
             frame.BorderSizePixel = 0
             frame.Parent = ScrollingFrame
 
@@ -661,7 +657,6 @@ function SpectrumUI:CreateToggleButton(config)
     local ToggleBtn = Instance.new("ImageButton")
     ToggleBtn.Name = "ToggleBtn"
     ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
-    -- LADO ESQUERDO, CENTRALIZADO VERTICALMENTE
     ToggleBtn.Position = UDim2.new(0, 20, 0.5, -25)
     ToggleBtn.AnchorPoint = Vector2.new(0, 0.5)
     ToggleBtn.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
@@ -676,9 +671,8 @@ function SpectrumUI:CreateToggleButton(config)
     BtnCorner.CornerRadius = UDim.new(1, 0)
     BtnCorner.Parent = ToggleBtn
 
-    -- Remove qualquer UIStroke
-    for _, child in ipairs(ToggleBtn:GetChildren()) do
-        if child:IsA("UIStroke") then child:Destroy() end
+    if ToggleBtn:FindFirstChildWhichIsA("UIStroke") then
+        ToggleBtn:FindFirstChildWhichIsA("UIStroke"):Destroy()
     end
 
     local dragging = false
