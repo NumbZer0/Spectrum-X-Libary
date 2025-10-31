@@ -1,4 +1,4 @@
--- ========== SPECTRUM UI LIBRARY V1.8 CUSTOM ==========
+-- ========== SPECTRUM UI LIBRARY V1.8 FINAL CORRIGIDA ==========
 local SpectrumUI = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -7,17 +7,14 @@ local TextService = game:GetService("TextService")
 local function makeHeaderDraggable(header, frame)
     local dragging = false
     local mousePos, framePos
-
     local function getInputPosition(input)
         return input.UserInputType == Enum.UserInputType.Touch and input.Position or UserInputService:GetMouseLocation()
     end
-
     header.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
             mousePos = getInputPosition(input)
             framePos = frame.Position
-
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then
                     dragging = false
@@ -25,7 +22,6 @@ local function makeHeaderDraggable(header, frame)
             end)
         end
     end)
-
     UserInputService.InputChanged:Connect(function(input)
         if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
             local delta = getInputPosition(input) - mousePos
@@ -206,7 +202,6 @@ function SpectrumUI:CreateWindow(config)
     local isMinimized = false
     MinimizeButton.MouseButton1Click:Connect(function()
         isMinimized = not isMinimized
-
         if isMinimized then
             TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back), {
                 Size = UDim2.new(0, 550, 0, 60)
@@ -290,7 +285,6 @@ function SpectrumUI:CreateWindow(config)
                 tab.Button.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
                 tab.Label.TextColor3 = Color3.fromRGB(200, 200, 200)
             end
-
             TabFrame.Visible = true
             TabButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
             TabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -342,15 +336,11 @@ function SpectrumUI:CreateWindow(config)
             ButtonFrame.MouseEnter:Connect(function()
                 TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = btnConfig.HoverColor or Color3.fromRGB(160, 10, 10)}):Play()
             end)
-
             ButtonFrame.MouseLeave:Connect(function()
                 TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = btnConfig.BackgroundColor3 or Color3.fromRGB(128, 0, 0)}):Play()
             end)
-
             ButtonFrame.MouseButton1Click:Connect(function()
-                if btnConfig.Callback then
-                    btnConfig.Callback()
-                end
+                if btnConfig.Callback then btnConfig.Callback() end
             end)
         end
 
@@ -360,18 +350,15 @@ function SpectrumUI:CreateWindow(config)
             frame.BackgroundColor3 = noticeConfig.Color or Color3.fromRGB(255, 230, 180)
             frame.BorderSizePixel = 0
             frame.Parent = ScrollingFrame
-
             local corner = Instance.new("UICorner")
             corner.CornerRadius = UDim.new(0, 12)
             corner.Parent = frame
-
             local icon = Instance.new("ImageLabel")
             icon.Size = UDim2.new(0, 34, 0, 34)
             icon.Position = UDim2.new(0, 10, 0, 13)
             icon.BackgroundTransparency = 1
             icon.Image = "rbxassetid://4871684504"
             icon.Parent = frame
-
             local title = Instance.new("TextLabel")
             title.Size = UDim2.new(1, -60, 0, 24)
             title.Position = UDim2.new(0, 54, 0, 8)
@@ -382,7 +369,6 @@ function SpectrumUI:CreateWindow(config)
             title.TextColor3 = Color3.fromRGB(255,255,255)
             title.TextXAlignment = Enum.TextXAlignment.Left
             title.Parent = frame
-
             if noticeConfig.Subtitle then
                 local subtitle = Instance.new("TextLabel")
                 subtitle.Size = UDim2.new(1, -60, 0, 18)
@@ -403,19 +389,8 @@ function SpectrumUI:CreateWindow(config)
             local font = Enum.Font.Gotham
             local textSize = 11
             local maxWidth = 400
-
-            -- Cria TextLabel temporário para calcular altura correta com wrap
-            local tempLabel = Instance.new("TextLabel")
-            tempLabel.Size = UDim2.new(1, -65, 0, 0)
-            tempLabel.Font = font
-            tempLabel.TextSize = textSize
-            tempLabel.TextWrapped = true
-            tempLabel.Text = descText
-            tempLabel.Parent = ScrollingFrame
-            -- O Parent é necessário para cálculo correto no Roblox
-            local calculatedTextSize = tempLabel.TextBounds
-            tempLabel:Destroy()
-
+            -- Calcula altura real do texto usando TextService e wrap
+            local calculatedTextSize = TextService:GetTextSize(descText, textSize, font, Vector2.new(maxWidth, math.huge))
             local baseHeight = 40
             local extraHeight = math.max(calculatedTextSize.Y, 20)
             local ToggleFrame = Instance.new("Frame")
@@ -423,11 +398,9 @@ function SpectrumUI:CreateWindow(config)
             ToggleFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
             ToggleFrame.BorderSizePixel = 0
             ToggleFrame.Parent = ScrollingFrame
-
             local ToggleCorner = Instance.new("UICorner")
             ToggleCorner.CornerRadius = UDim.new(0, 10)
             ToggleCorner.Parent = ToggleFrame
-
             local ToggleLabel = Instance.new("TextLabel")
             ToggleLabel.Size = UDim2.new(1, -65, 0, 20)
             ToggleLabel.Position = UDim2.new(0, 12, 0, 10)
@@ -438,7 +411,6 @@ function SpectrumUI:CreateWindow(config)
             ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
             ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
             ToggleLabel.Parent = ToggleFrame
-
             local ToggleDesc = Instance.new("TextLabel")
             ToggleDesc.Size = UDim2.new(1, -65, 0, extraHeight)
             ToggleDesc.Position = UDim2.new(0, 12, 0, 32)
@@ -451,7 +423,6 @@ function SpectrumUI:CreateWindow(config)
             ToggleDesc.TextYAlignment = Enum.TextYAlignment.Top
             ToggleDesc.TextWrapped = true
             ToggleDesc.Parent = ToggleFrame
-
             local ToggleButton = Instance.new("TextButton")
             ToggleButton.Size = UDim2.new(0, 45, 0, 25)
             ToggleButton.Position = UDim2.new(1, -55, 0, 10)
@@ -459,38 +430,30 @@ function SpectrumUI:CreateWindow(config)
             ToggleButton.BorderSizePixel = 0
             ToggleButton.Text = ""
             ToggleButton.Parent = ToggleFrame
-
             local ToggleBtnCorner = Instance.new("UICorner")
             ToggleBtnCorner.CornerRadius = UDim.new(1, 0)
             ToggleBtnCorner.Parent = ToggleButton
-
             local ToggleStroke = Instance.new("UIStroke")
             ToggleStroke.Color = Color3.fromRGB(60, 60, 70)
             ToggleStroke.Thickness = 2
             ToggleStroke.Transparency = 0.2
             ToggleStroke.Parent = ToggleButton
-
             local Circle = Instance.new("Frame")
             Circle.Size = UDim2.new(0, 19, 0, 19)
             Circle.Position = UDim2.new(0, 3, 0.5, -9.5)
             Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             Circle.BorderSizePixel = 0
             Circle.Parent = ToggleButton
-
             local CircleCorner = Instance.new("UICorner")
             CircleCorner.CornerRadius = UDim.new(1, 0)
             CircleCorner.Parent = Circle
-
             local isEnabled = toggleConfig.Default or false
-
             if isEnabled then
                 ToggleButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
                 Circle.Position = UDim2.new(1, -22, 0.5, -9.5)
             end
-
             ToggleButton.MouseButton1Click:Connect(function()
                 isEnabled = not isEnabled
-
                 if isEnabled then
                     TweenService:Create(ToggleButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(128, 0, 0)}):Play()
                     TweenService:Create(Circle, TweenInfo.new(0.2), {Position = UDim2.new(1, -22, 0.5, -9.5)}):Play()
@@ -498,10 +461,7 @@ function SpectrumUI:CreateWindow(config)
                     TweenService:Create(ToggleButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(60, 60, 70)}):Play()
                     TweenService:Create(Circle, TweenInfo.new(0.2), {Position = UDim2.new(0, 3, 0.5, -9.5)}):Play()
                 end
-
-                if toggleConfig.Callback then
-                    toggleConfig.Callback(isEnabled)
-                end
+                if toggleConfig.Callback then toggleConfig.Callback(isEnabled) end
             end)
         end
 
@@ -511,17 +471,14 @@ function SpectrumUI:CreateWindow(config)
             InputFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
             InputFrame.BorderSizePixel = 0
             InputFrame.Parent = ScrollingFrame
-
             local InputCorner = Instance.new("UICorner")
             InputCorner.CornerRadius = UDim.new(0, 10)
             InputCorner.Parent = InputFrame
-
             local InputStroke = Instance.new("UIStroke")
             InputStroke.Color = Color3.fromRGB(60, 60, 70)
             InputStroke.Thickness = 2
             InputStroke.Transparency = 0.2
             InputStroke.Parent = InputFrame
-
             local InputLabel = Instance.new("TextLabel")
             InputLabel.Size = UDim2.new(1, -20, 0, 20)
             InputLabel.Position = UDim2.new(0, 12, 0, 8)
@@ -532,7 +489,6 @@ function SpectrumUI:CreateWindow(config)
             InputLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
             InputLabel.TextXAlignment = Enum.TextXAlignment.Left
             InputLabel.Parent = InputFrame
-
             local InputBox = Instance.new("TextBox")
             InputBox.Size = UDim2.new(1, -24, 0, 30)
             InputBox.Position = UDim2.new(0, 12, 0, 32)
@@ -546,17 +502,14 @@ function SpectrumUI:CreateWindow(config)
             InputBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
             InputBox.BackgroundTransparency = 0
             InputBox.Parent = InputFrame
-
             local InputBoxCorner = Instance.new("UICorner")
             InputBoxCorner.CornerRadius = UDim.new(0, 8)
             InputBoxCorner.Parent = InputBox
-
             local InputBoxStroke = Instance.new("UIStroke")
             InputBoxStroke.Color = Color3.fromRGB(60, 60, 70)
             InputBoxStroke.Thickness = 2
             InputBoxStroke.Transparency = 0.2
             InputBoxStroke.Parent = InputBox
-
             InputBox.FocusLost:Connect(function()
                 if inputConfig.Callback then
                     inputConfig.Callback(InputBox.Text)
@@ -570,11 +523,9 @@ function SpectrumUI:CreateWindow(config)
             DropdownFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
             DropdownFrame.BorderSizePixel = 0
             DropdownFrame.Parent = ScrollingFrame
-
             local DropCorner = Instance.new("UICorner")
             DropCorner.CornerRadius = UDim.new(0, 10)
             DropCorner.Parent = DropdownFrame
-
             local DropButton = Instance.new("TextButton")
             DropButton.Size = UDim2.new(1, -24, 0, 35)
             DropButton.Position = UDim2.new(0, 12, 0, 5)
@@ -582,11 +533,9 @@ function SpectrumUI:CreateWindow(config)
             DropButton.BorderSizePixel = 0
             DropButton.Text = ""
             DropButton.Parent = DropdownFrame
-
             local DropBtnCorner = Instance.new("UICorner")
             DropBtnCorner.CornerRadius = UDim.new(0, 8)
             DropBtnCorner.Parent = DropButton
-
             local DropLabel = Instance.new("TextLabel")
             DropLabel.Size = UDim2.new(1, -40, 1, 0)
             DropLabel.Position = UDim2.new(0, 12, 0, 0)
@@ -597,7 +546,6 @@ function SpectrumUI:CreateWindow(config)
             DropLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
             DropLabel.TextXAlignment = Enum.TextXAlignment.Left
             DropLabel.Parent = DropButton
-
             local Arrow = Instance.new("TextLabel")
             Arrow.Size = UDim2.new(0, 20, 1, 0)
             Arrow.Position = UDim2.new(1, -25, 0, 0)
@@ -607,7 +555,6 @@ function SpectrumUI:CreateWindow(config)
             Arrow.TextSize = 10
             Arrow.TextColor3 = Color3.fromRGB(200, 200, 200)
             Arrow.Parent = DropButton
-
             local OptionsList = Instance.new("Frame")
             OptionsList.Size = UDim2.new(1, -24, 0, 0)
             OptionsList.Position = UDim2.new(0, 12, 0, 45)
@@ -616,20 +563,15 @@ function SpectrumUI:CreateWindow(config)
             OptionsList.Visible = false
             OptionsList.ClipsDescendants = true
             OptionsList.Parent = DropdownFrame
-
             local OptionsCorner = Instance.new("UICorner")
             OptionsCorner.CornerRadius = UDim.new(0, 8)
             OptionsCorner.Parent = OptionsList
-
             local OptionsLayout = Instance.new("UIListLayout")
             OptionsLayout.SortOrder = Enum.SortOrder.LayoutOrder
             OptionsLayout.Parent = OptionsList
-
             local isOpen = false
-
             DropButton.MouseButton1Click:Connect(function()
                 isOpen = not isOpen
-
                 if isOpen then
                     local targetSize = #(dropConfig.Options or {}) * 30
                     OptionsList.Visible = true
@@ -644,7 +586,6 @@ function SpectrumUI:CreateWindow(config)
                     OptionsList.Visible = false
                 end
             end)
-
             for _, option in pairs(dropConfig.Options or {}) do
                 local OptionButton = Instance.new("TextButton")
                 OptionButton.Size = UDim2.new(1, 0, 0, 30)
@@ -656,19 +597,15 @@ function SpectrumUI:CreateWindow(config)
                 OptionButton.TextColor3 = Color3.fromRGB(220, 220, 220)
                 OptionButton.TextXAlignment = Enum.TextXAlignment.Left
                 OptionButton.Parent = OptionsList
-
                 local OptionPadding = Instance.new("UIPadding")
                 OptionPadding.PaddingLeft = UDim.new(0, 12)
                 OptionPadding.Parent = OptionButton
-
                 OptionButton.MouseEnter:Connect(function()
                     OptionButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
                 end)
-
                 OptionButton.MouseLeave:Connect(function()
                     OptionButton.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
                 end)
-
                 OptionButton.MouseButton1Click:Connect(function()
                     DropLabel.Text = option
                     isOpen = false
@@ -677,17 +614,14 @@ function SpectrumUI:CreateWindow(config)
                     TweenService:Create(Arrow, TweenInfo.new(0.2), {Rotation = 0}):Play()
                     task.wait(0.2)
                     OptionsList.Visible = false
-
                     if dropConfig.Callback then
                         dropConfig.Callback(option)
                     end
                 end)
             end
         end
-
         return Tab
     end
-
     return Window
 end
 
@@ -704,26 +638,21 @@ function SpectrumUI:CreateToggleButton(config)
     ToggleBtn.ImageColor3 = Color3.fromRGB(255, 255, 255)
     ToggleBtn.ZIndex = 9999
     ToggleBtn.Parent = game:GetService("CoreGui")
-
     local BtnCorner = Instance.new("UICorner")
     BtnCorner.CornerRadius = UDim.new(1, 0)
     BtnCorner.Parent = ToggleBtn
-
     local BtnStroke = Instance.new("UIStroke")
     BtnStroke.Color = Color3.fromRGB(60, 60, 70)
     BtnStroke.Thickness = 2
     BtnStroke.Transparency = 0.2
     BtnStroke.Parent = ToggleBtn
-
     local dragging = false
     local dragInput, mousePos, framePos
-
     ToggleBtn.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
             mousePos = input.Position
             framePos = ToggleBtn.Position
-
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then
                     dragging = false
@@ -731,27 +660,23 @@ function SpectrumUI:CreateToggleButton(config)
             end)
         end
     end)
-
     ToggleBtn.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
             dragInput = input
         end
     end)
-
     UserInputService.InputChanged:Connect(function(input)
         if input == dragInput and dragging then
             local delta = input.Position - mousePos
             ToggleBtn.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
         end
     end)
-
     ToggleBtn.MouseButton1Click:Connect(function()
         local MainFrame = game:GetService("CoreGui"):FindFirstChild("SpectrumUI"):FindFirstChild("MainFrame")
         if MainFrame then
             MainFrame.Visible = not MainFrame.Visible
         end
     end)
-
     return ToggleBtn
 end
 
