@@ -1,4 +1,4 @@
--- ========== SPECTRUM UI LIBRARY V1.1 ==========
+-- ========== SPECTRUM UI LIBRARY V1.2 ==========
 local SpectrumUI = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -21,13 +21,9 @@ local function makeHeaderDraggable(header, frame)
             mousePos = UserInputService:GetMouseLocation()
             framePos = frame.Position
 
-            local function endDrag()
-                dragging = false
-            end
-
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then
-                    endDrag()
+                    dragging = false
                 end
             end)
         end
@@ -96,28 +92,42 @@ function SpectrumUI:CreateWindow(config)
     HeaderFix.BorderSizePixel = 0
     HeaderFix.Parent = Header
 
+    -- Logo atrás do título/subtítulo (se fornecido)
+    if config.LogoId then
+        local LogoImg = Instance.new("ImageLabel")
+        LogoImg.Size = UDim2.new(0, 38, 0, 38)
+        LogoImg.Position = UDim2.new(0, 10, 0.5, -19)
+        LogoImg.BackgroundTransparency = 1
+        LogoImg.Image = tostring(config.LogoId)
+        LogoImg.ImageTransparency = 0.25
+        LogoImg.ZIndex = 1
+        LogoImg.Parent = Header
+    end
+
     -- Título
     local Title = Instance.new("TextLabel")
     Title.Size = UDim2.new(0, 200, 1, 0)
-    Title.Position = UDim2.new(0, 15, 0, 0)
+    Title.Position = UDim2.new(0, 60, 0, 0)
     Title.BackgroundTransparency = 1
     Title.Text = config.Title or "Spectrum UI"
     Title.Font = Enum.Font.GothamBold
     Title.TextSize = 16
     Title.TextColor3 = Color3.fromRGB(255, 255, 255)
     Title.TextXAlignment = Enum.TextXAlignment.Left
+    Title.ZIndex = 2
     Title.Parent = Header
 
     -- Subtitle
     local Subtitle = Instance.new("TextLabel")
     Subtitle.Size = UDim2.new(0, 200, 0, 15)
-    Subtitle.Position = UDim2.new(0, 15, 1, -18)
+    Subtitle.Position = UDim2.new(0, 60, 1, -18)
     Subtitle.BackgroundTransparency = 1
     Subtitle.Text = config.Subtitle or ""
     Subtitle.Font = Enum.Font.Gotham
     Subtitle.TextSize = 10
     Subtitle.TextColor3 = Color3.fromRGB(200, 200, 200)
     Subtitle.TextXAlignment = Enum.TextXAlignment.Left
+    Subtitle.ZIndex = 2
     Subtitle.Parent = Header
 
     -- Drag apenas pelo Header
@@ -274,7 +284,7 @@ function SpectrumUI:CreateWindow(config)
             TabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
         end
 
-        -- Função para criar Button
+        -- Função para criar Button com ícone de click à direita
         function Tab:Button(btnConfig)
             local ButtonFrame = Instance.new("TextButton")
             ButtonFrame.Size = UDim2.new(1, 0, 0, 40)
@@ -288,15 +298,22 @@ function SpectrumUI:CreateWindow(config)
             ButtonCorner.Parent = ButtonFrame
 
             local ButtonLabel = Instance.new("TextLabel")
-            ButtonLabel.Size = UDim2.new(1, -20, 1, 0)
+            ButtonLabel.Size = UDim2.new(1, -44, 1, 0)
             ButtonLabel.Position = UDim2.new(0, 10, 0, 0)
             ButtonLabel.BackgroundTransparency = 1
             ButtonLabel.Text = btnConfig.Name or "Button"
             ButtonLabel.Font = Enum.Font.GothamBold
-            ButtonLabel.TextSize = 13
+            ButtonLabel.TextSize = 15
             ButtonLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
             ButtonLabel.TextXAlignment = Enum.TextXAlignment.Center
             ButtonLabel.Parent = ButtonFrame
+
+            local ClickIcon = Instance.new("ImageLabel")
+            ClickIcon.Size = UDim2.new(0, 26, 0, 26)
+            ClickIcon.Position = UDim2.new(1, -32, 0.5, -13)
+            ClickIcon.BackgroundTransparency = 1
+            ClickIcon.Image = btnConfig.ClickIconId or "rbxassetid://10366495969"
+            ClickIcon.Parent = ButtonFrame
 
             ButtonFrame.MouseEnter:Connect(function()
                 TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(160, 10, 10)}):Play()
@@ -340,7 +357,7 @@ function SpectrumUI:CreateWindow(config)
             title.Text = noticeConfig.Title or "Aviso"
             title.Font = Enum.Font.GothamBold
             title.TextSize = 15
-            title.TextColor3 = Color3.fromRGB(255, 255, 255)
+            title.TextColor3 = Color3.fromRGB(90, 60, 25)
             title.TextXAlignment = Enum.TextXAlignment.Left
             title.Parent = frame
 
@@ -352,14 +369,14 @@ function SpectrumUI:CreateWindow(config)
                 subtitle.Text = noticeConfig.Subtitle
                 subtitle.Font = Enum.Font.Gotham
                 subtitle.TextSize = 12
-                subtitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+                subtitle.TextColor3 = Color3.fromRGB(120, 90, 50)
                 subtitle.TextXAlignment = Enum.TextXAlignment.Left
                 subtitle.TextWrapped = true
                 subtitle.Parent = frame
             end
         end
 
-        -- Função para criar Toggle
+        -- Funções Toggle, Input, Dropdown continuam iguais...
         function Tab:Toggle(toggleConfig)
             local ToggleFrame = Instance.new("Frame")
             ToggleFrame.Size = UDim2.new(1, 0, 0, 70)
@@ -440,7 +457,6 @@ function SpectrumUI:CreateWindow(config)
             end)
         end
 
-        -- Função para criar Input
         function Tab:Input(inputConfig)
             local InputFrame = Instance.new("Frame")
             InputFrame.Size = UDim2.new(1, 0, 0, 70)
@@ -487,7 +503,6 @@ function SpectrumUI:CreateWindow(config)
             end)
         end
 
-        -- Função para criar Dropdown
         function Tab:Dropdown(dropConfig)
             local DropdownFrame = Instance.new("Frame")
             DropdownFrame.Size = UDim2.new(1, 0, 0, 45)
