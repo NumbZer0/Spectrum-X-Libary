@@ -1,4 +1,4 @@
--- ========== SPECTRUM UI LIBRARY V1.7 ==========
+-- ========== SPECTRUM UI LIBRARY V1.8 ==========
 local SpectrumUI = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -7,10 +7,14 @@ local function makeHeaderDraggable(header, frame)
     local dragging = false
     local mousePos, framePos
 
+    local function getInputPosition(input)
+        return input.UserInputType == Enum.UserInputType.Touch and input.Position or UserInputService:GetMouseLocation()
+    end
+
     header.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
-            mousePos = UserInputService:GetMouseLocation()
+            mousePos = getInputPosition(input)
             framePos = frame.Position
 
             input.Changed:Connect(function()
@@ -23,13 +27,12 @@ local function makeHeaderDraggable(header, frame)
 
     UserInputService.InputChanged:Connect(function(input)
         if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            local delta = UserInputService:GetMouseLocation() - mousePos
+            local delta = getInputPosition(input) - mousePos
             frame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
         end
     end)
 end
 
--- Só aplica transparência em containers principais
 local function applyTransparency(parent, transparency)
     for _, obj in ipairs(parent:GetDescendants()) do
         if obj:IsA("Frame") or obj:IsA("TextButton") or obj:IsA("ScrollingFrame") then
@@ -148,6 +151,7 @@ function SpectrumUI:CreateWindow(config)
     Subtitle.ZIndex = 2
     Subtitle.Parent = Header
 
+    -- Drag pelo header no mobile e PC!
     makeHeaderDraggable(Header, MainFrame)
 
     local MinimizeButton = Instance.new("TextButton")
@@ -189,6 +193,7 @@ function SpectrumUI:CreateWindow(config)
     local ContentContainer = Instance.new("Frame")
     ContentContainer.Size = UDim2.new(1, -170, 1, -75)
     ContentContainer.Position = UDim2.new(0, 160, 0, 70)
+    ContentContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 25) -- PRETO IGUAL SIDEBAR!
     ContentContainer.Parent = MainFrame
 
     local isMinimized = false
@@ -221,10 +226,12 @@ function SpectrumUI:CreateWindow(config)
 
         local TabFrame = Instance.new("Frame")
         TabFrame.Size = UDim2.new(1, 0, 1, 0)
+        TabFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25) -- PRETO
         TabFrame.Parent = ContentContainer
 
         local ScrollingFrame = Instance.new("ScrollingFrame")
         ScrollingFrame.Size = UDim2.new(1, 0, 1, 0)
+        ScrollingFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
         ScrollingFrame.BorderSizePixel = 0
         ScrollingFrame.ScrollBarThickness = 4
         ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(128, 0, 0)
