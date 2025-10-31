@@ -170,12 +170,12 @@ function SpectrumUI:CreateWindow(config)
     local Sidebar = Instance.new("Frame")
     Sidebar.Size = UDim2.new(0, 140, 1, -75)
     Sidebar.Position = UDim2.new(0, 10, 0, 70)
-    Sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+    Sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     Sidebar.BorderSizePixel = 0
     Sidebar.Parent = MainFrame
 
     local SidebarCorner = Instance.new("UICorner")
-    SidebarCorner.CornerRadius = UDim.new(0, 10)
+    SidebarCorner.CornerRadius = UDim.new(0, 30)
     SidebarCorner.Parent = Sidebar
 
     local TabList = Instance.new("UIListLayout")
@@ -644,7 +644,7 @@ function SpectrumUI:CreateToggleButton(config)
     local ToggleBtn = Instance.new("ImageButton")
     ToggleBtn.Name = "ToggleBtn"
     ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
-    ToggleBtn.Position = UDim2.new(0, 20, 0.5, -25) -- lado esquerdo, centralizado
+    ToggleBtn.Position = UDim2.new(0, 0, 0, 0) -- lado esquerdo, centralizado
     ToggleBtn.AnchorPoint = Vector2.new(0, 0.5)
     ToggleBtn.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
     ToggleBtn.BackgroundTransparency = 0.3
