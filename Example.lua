@@ -1,16 +1,8 @@
--- ========== SPECTRUM UI LIBRARY V1.4 ==========
+-- ========== SPECTRUM UI LIBRARY V1.5 ==========
 local SpectrumUI = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
--- Criar ScreenGui principal
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "SpectrumUI"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-ScreenGui.Parent = game:GetService("CoreGui")
-
--- Função para arrastar apenas pelo header
 local function makeHeaderDraggable(header, frame)
     local dragging = false
     local mousePos, framePos
@@ -37,11 +29,9 @@ local function makeHeaderDraggable(header, frame)
     end)
 end
 
--- Função para aplicar transparência em todos backgrounds exceto textos/toggles
 local function applyTransparency(parent, transparency)
     for _, obj in ipairs(parent:GetDescendants()) do
         if obj:IsA("Frame") or obj:IsA("TextButton") or obj:IsA("ImageLabel") or obj:IsA("ScrollingFrame") then
-            -- Exceções: toggles (Circle) e letras (TextLabel/TextBox)
             if not (obj.Name == "Circle") then
                 obj.BackgroundTransparency = transparency
             end
@@ -52,7 +42,6 @@ local function applyTransparency(parent, transparency)
     end
 end
 
--- Função para criar Window
 function SpectrumUI:CreateWindow(config)
     local Window = {}
     Window.Tabs = {}
@@ -75,7 +64,6 @@ function SpectrumUI:CreateWindow(config)
     MainCorner.CornerRadius = UDim.new(0, 15)
     MainCorner.Parent = MainFrame
 
-    -- Gradiente no MainFrame (vermelho escuro para preto)
     local MainGradient = Instance.new("UIGradient")
     MainGradient.Color = ColorSequence.new{
         ColorSequenceKeypoint.new(0, Color3.fromRGB(128,0,0)),
@@ -84,7 +72,6 @@ function SpectrumUI:CreateWindow(config)
     MainGradient.Rotation = 90
     MainGradient.Parent = MainFrame
 
-    -- Sombra
     local Shadow = Instance.new("ImageLabel")
     Shadow.Size = UDim2.new(1, 40, 1, 40)
     Shadow.Position = UDim2.new(0, -20, 0, -20)
@@ -97,7 +84,7 @@ function SpectrumUI:CreateWindow(config)
     Shadow.ZIndex = 0
     Shadow.Parent = MainFrame
 
-    -- Header (único frame para Title + Subtitle)
+    -- Header
     local Header = Instance.new("Frame")
     Header.Name = "Header"
     Header.Size = UDim2.new(1, 0, 0, 60)
@@ -129,7 +116,6 @@ function SpectrumUI:CreateWindow(config)
         LogoImg.Parent = Header
     end
 
-    -- Título
     local Title = Instance.new("TextLabel")
     Title.Size = UDim2.new(1, -80, 0, 24)
     Title.Position = UDim2.new(0, 60, 0, 5)
@@ -142,7 +128,6 @@ function SpectrumUI:CreateWindow(config)
     Title.ZIndex = 2
     Title.Parent = Header
 
-    -- Subtitle
     local Subtitle = Instance.new("TextLabel")
     Subtitle.Size = UDim2.new(1, -80, 0, 15)
     Subtitle.Position = UDim2.new(0, 60, 0, 32)
@@ -155,14 +140,13 @@ function SpectrumUI:CreateWindow(config)
     Subtitle.ZIndex = 2
     Subtitle.Parent = Header
 
-    -- Drag apenas pelo Header
     makeHeaderDraggable(Header, MainFrame)
 
-    -- Botão Minimizar
     local MinimizeButton = Instance.new("TextButton")
     MinimizeButton.Size = UDim2.new(0, 35, 0, 35)
     MinimizeButton.Position = UDim2.new(1, -45, 0.5, -17.5)
     MinimizeButton.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+    MinimizeButton.BackgroundTransparency = transparency
     MinimizeButton.Text = "−"
     MinimizeButton.Font = Enum.Font.GothamBold
     MinimizeButton.TextSize = 20
@@ -178,12 +162,21 @@ function SpectrumUI:CreateWindow(config)
     Sidebar.Size = UDim2.new(0, 140, 1, -75)
     Sidebar.Position = UDim2.new(0, 10, 0, 70)
     Sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+    Sidebar.BackgroundTransparency = transparency
     Sidebar.BorderSizePixel = 0
     Sidebar.Parent = MainFrame
 
     local SidebarCorner = Instance.new("UICorner")
     SidebarCorner.CornerRadius = UDim.new(0, 10)
     SidebarCorner.Parent = Sidebar
+
+    local SidebarGradient = Instance.new("UIGradient")
+    SidebarGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(20,20,25)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,0))
+    }
+    SidebarGradient.Rotation = 90
+    SidebarGradient.Parent = Sidebar
 
     local TabList = Instance.new("UIListLayout")
     TabList.Padding = UDim.new(0, 8)
@@ -196,14 +189,12 @@ function SpectrumUI:CreateWindow(config)
     TabPadding.PaddingRight = UDim.new(0, 10)
     TabPadding.Parent = Sidebar
 
-    -- Container de conteúdo
     local ContentContainer = Instance.new("Frame")
     ContentContainer.Size = UDim2.new(1, -170, 1, -75)
     ContentContainer.Position = UDim2.new(0, 160, 0, 70)
     ContentContainer.BackgroundTransparency = transparency
     ContentContainer.Parent = MainFrame
 
-    -- Sistema de minimizar
     local isMinimized = false
     MinimizeButton.MouseButton1Click:Connect(function()
         isMinimized = not isMinimized
@@ -226,15 +217,12 @@ function SpectrumUI:CreateWindow(config)
         end
     end)
 
-    -- Aplica transparência em tudo menos texto/toggle interruptor
     applyTransparency(MainFrame, transparency)
 
-    -- Função para criar Tab
     function Window:CreateTab(tabConfig)
         local Tab = {}
         Tab.Elements = {}
 
-        -- Frame da Tab
         local TabFrame = Instance.new("Frame")
         TabFrame.Size = UDim2.new(1, 0, 1, 0)
         TabFrame.BackgroundTransparency = transparency
@@ -265,7 +253,6 @@ function SpectrumUI:CreateWindow(config)
             ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, ContentLayout.AbsoluteContentSize.Y + 20)
         end)
 
-        -- Botão da Tab na Sidebar
         local TabButton = Instance.new("TextButton")
         TabButton.Size = UDim2.new(1, 0, 0, 35)
         TabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
@@ -316,7 +303,6 @@ function SpectrumUI:CreateWindow(config)
             TabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
         end
 
-        -- Função para criar Button com ícone de click à direita
         function Tab:Button(btnConfig)
             local ButtonFrame = Instance.new("TextButton")
             ButtonFrame.Size = UDim2.new(1, 0, 0, 40)
@@ -363,7 +349,6 @@ function SpectrumUI:CreateWindow(config)
             end)
         end
 
-        -- Função para criar avisos/notices
         function Tab:Notice(noticeConfig)
             local frame = Instance.new("Frame")
             frame.Size = UDim2.new(1, 0, 0, 60)
@@ -409,7 +394,6 @@ function SpectrumUI:CreateWindow(config)
             end
         end
 
-        -- Funções Toggle, Input, Dropdown continuam iguais...
         function Tab:Toggle(toggleConfig)
             local ToggleFrame = Instance.new("Frame")
             ToggleFrame.Size = UDim2.new(1, 0, 0, 70)
@@ -449,7 +433,7 @@ function SpectrumUI:CreateWindow(config)
             ToggleButton.Size = UDim2.new(0, 45, 0, 25)
             ToggleButton.Position = UDim2.new(1, -55, 0, 10)
             ToggleButton.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
-            ToggleButton.BackgroundTransparency = 0 -- nunca transparente!
+            ToggleButton.BackgroundTransparency = 0
             ToggleButton.Text = ""
             ToggleButton.Parent = ToggleFrame
 
@@ -462,7 +446,7 @@ function SpectrumUI:CreateWindow(config)
             Circle.Size = UDim2.new(0, 19, 0, 19)
             Circle.Position = UDim2.new(0, 3, 0.5, -9.5)
             Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            Circle.BackgroundTransparency = 0 -- nunca transparente!
+            Circle.BackgroundTransparency = 0
             Circle.BorderSizePixel = 0
             Circle.Parent = ToggleButton
 
@@ -673,7 +657,6 @@ function SpectrumUI:CreateWindow(config)
     return Window
 end
 
--- Função para criar Toggle UI Button (botão flutuante)
 function SpectrumUI:CreateToggleButton(config)
     local transparency = typeof(config.Transparency) == "number" and config.Transparency or 0
 
@@ -700,7 +683,6 @@ function SpectrumUI:CreateToggleButton(config)
         ScreenGui:FindFirstChild("MainFrame").Visible = not ScreenGui:FindFirstChild("MainFrame").Visible
     end)
 
-    -- Draggable do botão flutuante continua igual
     local dragging = false
     local dragInput, mousePos, framePos
 
