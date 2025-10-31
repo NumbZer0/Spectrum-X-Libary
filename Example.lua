@@ -31,12 +31,8 @@ end
 
 local function applyTransparency(parent, transparency)
     for _, obj in ipairs(parent:GetDescendants()) do
-        if obj:IsA("Frame") or obj:IsA("TextButton") or obj:IsA("ImageLabel") or obj:IsA("ScrollingFrame") then
-            if not (obj.Name == "Circle") then
-                obj.BackgroundTransparency = transparency
-            end
-        end
-        if obj:IsA("ImageButton") then
+        if (obj:IsA("Frame") or obj:IsA("TextButton") or obj:IsA("ImageLabel") or obj:IsA("ScrollingFrame") or obj:IsA("ImageButton"))
+        and not (obj:IsA("TextLabel") or obj:IsA("TextBox") or obj.Name == "Circle") then
             obj.BackgroundTransparency = transparency
         end
     end
@@ -47,9 +43,14 @@ function SpectrumUI:CreateWindow(config)
     Window.Tabs = {}
     Window.CurrentTab = nil
 
-    local transparency = typeof(config.Transparency) == "number" and config.Transparency or 0
+    local transparency = typeof(config.Transparency) == "number" and math.clamp(config.Transparency, 0, 0.8) or 0.3
 
-    -- Frame principal
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "SpectrumUI"
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ScreenGui.Parent = game:GetService("CoreGui")
+
     local MainFrame = Instance.new("Frame")
     MainFrame.Name = "MainFrame"
     MainFrame.Size = UDim2.new(0, 550, 0, 350)
@@ -84,7 +85,6 @@ function SpectrumUI:CreateWindow(config)
     Shadow.ZIndex = 0
     Shadow.Parent = MainFrame
 
-    -- Header
     local Header = Instance.new("Frame")
     Header.Name = "Header"
     Header.Size = UDim2.new(1, 0, 0, 60)
@@ -146,7 +146,6 @@ function SpectrumUI:CreateWindow(config)
     MinimizeButton.Size = UDim2.new(0, 35, 0, 35)
     MinimizeButton.Position = UDim2.new(1, -45, 0.5, -17.5)
     MinimizeButton.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
-    MinimizeButton.BackgroundTransparency = transparency
     MinimizeButton.Text = "−"
     MinimizeButton.Font = Enum.Font.GothamBold
     MinimizeButton.TextSize = 20
@@ -157,26 +156,16 @@ function SpectrumUI:CreateWindow(config)
     MinimizeCorner.CornerRadius = UDim.new(0, 8)
     MinimizeCorner.Parent = MinimizeButton
 
-    -- Sidebar
     local Sidebar = Instance.new("Frame")
     Sidebar.Size = UDim2.new(0, 140, 1, -75)
     Sidebar.Position = UDim2.new(0, 10, 0, 70)
     Sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-    Sidebar.BackgroundTransparency = transparency
     Sidebar.BorderSizePixel = 0
     Sidebar.Parent = MainFrame
 
     local SidebarCorner = Instance.new("UICorner")
     SidebarCorner.CornerRadius = UDim.new(0, 10)
     SidebarCorner.Parent = Sidebar
-
-    local SidebarGradient = Instance.new("UIGradient")
-    SidebarGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(20,20,25)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0,0,0))
-    }
-    SidebarGradient.Rotation = 90
-    SidebarGradient.Parent = Sidebar
 
     local TabList = Instance.new("UIListLayout")
     TabList.Padding = UDim.new(0, 8)
@@ -217,6 +206,7 @@ function SpectrumUI:CreateWindow(config)
         end
     end)
 
+    -- Aplica transparência nos backgrounds exceto textos e toggles
     applyTransparency(MainFrame, transparency)
 
     function Window:CreateTab(tabConfig)
@@ -658,7 +648,7 @@ function SpectrumUI:CreateWindow(config)
 end
 
 function SpectrumUI:CreateToggleButton(config)
-    local transparency = typeof(config.Transparency) == "number" and config.Transparency or 0
+    local transparency = typeof(config.Transparency) == "number" and math.clamp(config.Transparency, 0, 0.8) or 0.3
 
     local ToggleBtn = Instance.new("ImageButton")
     ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
@@ -667,7 +657,7 @@ function SpectrumUI:CreateToggleButton(config)
     ToggleBtn.BackgroundTransparency = transparency
     ToggleBtn.Image = config.Icon or "rbxassetid://7733954760"
     ToggleBtn.ImageColor3 = Color3.fromRGB(255, 255, 255)
-    ToggleBtn.Parent = ScreenGui
+    ToggleBtn.Parent = game:GetService("CoreGui")
 
     local BtnCorner = Instance.new("UICorner")
     BtnCorner.CornerRadius = UDim.new(1, 0)
@@ -680,7 +670,10 @@ function SpectrumUI:CreateToggleButton(config)
     BtnStroke.Parent = ToggleBtn
 
     ToggleBtn.MouseButton1Click:Connect(function()
-        ScreenGui:FindFirstChild("MainFrame").Visible = not ScreenGui:FindFirstChild("MainFrame").Visible
+        local MainFrame = game:GetService("CoreGui"):FindFirstChild("SpectrumUI"):FindFirstChild("MainFrame")
+        if MainFrame then
+            MainFrame.Visible = not MainFrame.Visible
+        end
     end)
 
     local dragging = false
