@@ -54,6 +54,11 @@ local function applyTransparency(parent, transparency)
     end
 end
 
+local function getTextHeight(text, font, size, width)
+    local result = TextService:GetTextSize(text, size, font, Vector2.new(width, math.huge))
+    return result.Y
+end
+
 function SpectrumUI:CreateWindow(config)
     local Window = {}
     Window.Tabs = {}
@@ -400,12 +405,16 @@ function SpectrumUI:CreateWindow(config)
 
         function Tab:Toggle(toggleConfig)
             local descText = toggleConfig.Description or ""
+            local font = Enum.Font.Gotham
+            local textSize = 11
+            local descWidth = 320 -- ajusta conforme seu layout
+            local descHeight = getTextHeight(descText, font, textSize, descWidth)
             local baseHeight = 40
-            local tallHeight = 75
-            local isLong = descText:find("\n") or #descText > 60
+            local minHeight = 24
+            local totalHeight = baseHeight + math.max(descHeight, minHeight)
 
             local ToggleFrame = Instance.new("Frame")
-            ToggleFrame.Size = UDim2.new(1, 0, 0, isLong and tallHeight or baseHeight)
+            ToggleFrame.Size = UDim2.new(1, 0, 0, totalHeight)
             ToggleFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
             ToggleFrame.BorderSizePixel = 0
             ToggleFrame.Parent = ScrollingFrame
@@ -419,19 +428,19 @@ function SpectrumUI:CreateWindow(config)
             ToggleLabel.Position = UDim2.new(0, 12, 0, 10)
             ToggleLabel.BackgroundTransparency = 1
             ToggleLabel.Text = toggleConfig.Name or "Toggle"
-            ToggleLabel.Font = Enum.Font.GothamBold
+            ToggleLabel.Font = font
             ToggleLabel.TextSize = 13
             ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
             ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
             ToggleLabel.Parent = ToggleFrame
 
             local ToggleDesc = Instance.new("TextLabel")
-            ToggleDesc.Size = UDim2.new(1, -65, 1, -32)
+            ToggleDesc.Size = UDim2.new(1, -65, 0, descHeight)
             ToggleDesc.Position = UDim2.new(0, 12, 0, 32)
             ToggleDesc.BackgroundTransparency = 1
             ToggleDesc.Text = descText
-            ToggleDesc.Font = Enum.Font.Gotham
-            ToggleDesc.TextSize = 11
+            ToggleDesc.Font = font
+            ToggleDesc.TextSize = textSize
             ToggleDesc.TextColor3 = Color3.fromRGB(160, 160, 160)
             ToggleDesc.TextXAlignment = Enum.TextXAlignment.Left
             ToggleDesc.TextYAlignment = Enum.TextYAlignment.Top
