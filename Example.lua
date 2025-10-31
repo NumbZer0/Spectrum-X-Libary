@@ -1,4 +1,4 @@
--- ========== SPECTRUM UI LIBRARY V1.8 ==========
+-- ========== SPECTRUM UI LIBRARY V1.8 CUSTOM ==========
 local SpectrumUI = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -310,7 +310,7 @@ function SpectrumUI:CreateWindow(config)
         function Tab:Button(btnConfig)
             local ButtonFrame = Instance.new("TextButton")
             ButtonFrame.Size = UDim2.new(1, 0, 0, 40)
-            ButtonFrame.BackgroundColor3 = btnConfig.BackgroundColor3 or Color3.fromRGB(128, 0, 0) -- COR DO USUÁRIO!
+            ButtonFrame.BackgroundColor3 = btnConfig.BackgroundColor3 or Color3.fromRGB(128, 0, 0)
             ButtonFrame.Text = ""
             ButtonFrame.AutoButtonColor = false
             ButtonFrame.BorderSizePixel = 0
@@ -339,7 +339,7 @@ function SpectrumUI:CreateWindow(config)
             ClickIcon.Parent = ButtonFrame
 
             ButtonFrame.MouseEnter:Connect(function()
-                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = btnConfig.HoverColor or ButtonFrame.BackgroundColor3}):Play()
+                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = btnConfig.HoverColor or Color3.fromRGB(160, 10, 10)}):Play()
             end)
 
             ButtonFrame.MouseLeave:Connect(function()
@@ -356,7 +356,7 @@ function SpectrumUI:CreateWindow(config)
         function Tab:Notice(noticeConfig)
             local frame = Instance.new("Frame")
             frame.Size = UDim2.new(1, 0, 0, 60)
-            frame.BackgroundColor3 = noticeConfig.Color or Color3.fromRGB(255, 230, 180) -- COR DO USUÁRIO!
+            frame.BackgroundColor3 = noticeConfig.Color or Color3.fromRGB(255, 230, 180)
             frame.BorderSizePixel = 0
             frame.Parent = ScrollingFrame
 
@@ -398,9 +398,16 @@ function SpectrumUI:CreateWindow(config)
         end
 
         function Tab:Toggle(toggleConfig)
+            local descText = toggleConfig.Description or ""
+            local lineCount = #descText:split("\n")
+            local hasLongDescription = lineCount > 1 or #descText > 60
+
+            local baseHeight = 40
+            local extraHeight = 28
+
             local ToggleFrame = Instance.new("Frame")
-            ToggleFrame.Size = UDim2.new(1, 0, 0, 70)
-            ToggleFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+            ToggleFrame.Size = UDim2.new(1, 0, 0, hasLongDescription and (baseHeight+extraHeight) or baseHeight)
+            ToggleFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
             ToggleFrame.BorderSizePixel = 0
             ToggleFrame.Parent = ScrollingFrame
 
@@ -420,7 +427,7 @@ function SpectrumUI:CreateWindow(config)
             ToggleLabel.Parent = ToggleFrame
 
             local ToggleDesc = Instance.new("TextLabel")
-            ToggleDesc.Size = UDim2.new(1, -65, 0, 30)
+            ToggleDesc.Size = UDim2.new(1, -65, 0, hasLongDescription and 30 or 20)
             ToggleDesc.Position = UDim2.new(0, 12, 0, 32)
             ToggleDesc.BackgroundTransparency = 1
             ToggleDesc.Text = toggleConfig.Description or ""
@@ -443,8 +450,13 @@ function SpectrumUI:CreateWindow(config)
             ToggleBtnCorner.CornerRadius = UDim.new(1, 0)
             ToggleBtnCorner.Parent = ToggleButton
 
+            local ToggleStroke = Instance.new("UIStroke")
+            ToggleStroke.Color = Color3.fromRGB(60, 60, 70)
+            ToggleStroke.Thickness = 2
+            ToggleStroke.Transparency = 0.2
+            ToggleStroke.Parent = ToggleButton
+
             local Circle = Instance.new("Frame")
-            Circle.Name = "Circle"
             Circle.Size = UDim2.new(0, 19, 0, 19)
             Circle.Position = UDim2.new(0, 3, 0.5, -9.5)
             Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -671,9 +683,11 @@ function SpectrumUI:CreateToggleButton(config)
     BtnCorner.CornerRadius = UDim.new(1, 0)
     BtnCorner.Parent = ToggleBtn
 
-    if ToggleBtn:FindFirstChildWhichIsA("UIStroke") then
-        ToggleBtn:FindFirstChildWhichIsA("UIStroke"):Destroy()
-    end
+    local BtnStroke = Instance.new("UIStroke")
+    BtnStroke.Color = Color3.fromRGB(60, 60, 70)
+    BtnStroke.Thickness = 2
+    BtnStroke.Transparency = 0.2
+    BtnStroke.Parent = ToggleBtn
 
     local dragging = false
     local dragInput, mousePos, framePos
