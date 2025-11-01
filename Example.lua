@@ -578,6 +578,45 @@ end
                 end
             end)
         end
+        
+        function Tab:Divider(dividerConfig)
+    local DividerFrame = Instance.new("Frame")
+    DividerFrame.Size = UDim2.new(1, 0, 0, dividerConfig.Text and 30 or 15)
+    DividerFrame.BackgroundTransparency = 1
+    DividerFrame.BorderSizePixel = 0
+    DividerFrame.Parent = ScrollingFrame
+    
+    -- Linha cinza
+    local Line = Instance.new("Frame")
+    Line.Size = UDim2.new(1, 0, 0, 2)
+    Line.Position = UDim2.new(0, 0, 0.5, -1)
+    Line.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+    Line.BorderSizePixel = 0
+    Line.Parent = DividerFrame
+    
+    local LineCorner = Instance.new("UICorner")
+    LineCorner.CornerRadius = UDim.new(1, 0)
+    LineCorner.Parent = Line
+    
+    -- Texto opcional no meio
+    if dividerConfig.Text then
+        local TextLabel = Instance.new("TextLabel")
+        TextLabel.Size = UDim2.new(0, 200, 1, 0)
+        TextLabel.Position = UDim2.new(0.5, -100, 0, 0)
+        TextLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        TextLabel.BorderSizePixel = 0
+        TextLabel.Text = " " .. dividerConfig.Text .. " "
+        TextLabel.Font = Enum.Font.GothamBold
+        TextLabel.TextSize = 12
+        TextLabel.TextColor3 = Color3.fromRGB(160, 160, 160)
+        TextLabel.Parent = DividerFrame
+        
+        local TextPadding = Instance.new("UIPadding")
+        TextPadding.PaddingLeft = UDim.new(0, 10)
+        TextPadding.PaddingRight = UDim.new(0, 10)
+        TextPadding.Parent = TextLabel
+    end
+end
 
         function Tab:Dropdown(dropConfig)
             local DropdownFrame = Instance.new("Frame")
