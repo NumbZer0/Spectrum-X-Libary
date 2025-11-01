@@ -316,7 +316,7 @@ function SpectrumUI:CreateWindow(config)
         function Tab:Button(btnConfig)
             local ButtonFrame = Instance.new("TextButton")
             ButtonFrame.Size = UDim2.new(1, 0, 0, 40)
-            ButtonFrame.BackgroundColor3 = btnConfig.BackgroundColor3 or Color3.fromRGB(128, 0, 0)
+            ButtonFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
             ButtonFrame.Text = ""
             ButtonFrame.AutoButtonColor = false
             ButtonFrame.BorderSizePixel = 0
@@ -325,6 +325,12 @@ function SpectrumUI:CreateWindow(config)
             local ButtonCorner = Instance.new("UICorner")
             ButtonCorner.CornerRadius = UDim.new(0, 10)
             ButtonCorner.Parent = ButtonFrame
+
+            local ButtonStroke = Instance.new("UIStroke")
+            ButtonStroke.Color = Color3.fromRGB(60, 60, 70)
+            ButtonStroke.Thickness = 2
+            ButtonStroke.Transparency = 0.2
+            ButtonStroke.Parent = ButtonFrame
 
             local ButtonLabel = Instance.new("TextLabel")
             ButtonLabel.Size = UDim2.new(1, -44, 1, 0)
@@ -345,11 +351,11 @@ function SpectrumUI:CreateWindow(config)
             ClickIcon.Parent = ButtonFrame
 
             ButtonFrame.MouseEnter:Connect(function()
-                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = btnConfig.HoverColor or Color3.fromRGB(160, 10, 10)}):Play()
+                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
             end)
 
             ButtonFrame.MouseLeave:Connect(function()
-                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = btnConfig.BackgroundColor3 or Color3.fromRGB(128, 0, 0)}):Play()
+                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 0, 0)}):Play()
             end)
 
             ButtonFrame.MouseButton1Click:Connect(function()
@@ -713,7 +719,7 @@ function SpectrumUI:CreateToggleButton(config)
     ToggleBtn.Parent = screenGui
 
     local BtnCorner = Instance.new("UICorner")
-    BtnCorner.CornerRadius = UDim.new(0, 20)
+    BtnCorner.CornerRadius = UDim.new(0, 10)
     BtnCorner.Parent = ToggleBtn
 
     local BtnStroke = Instance.new("UIStroke")
