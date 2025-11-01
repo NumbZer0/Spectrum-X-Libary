@@ -713,13 +713,13 @@ function SpectrumUI:CreateToggleButton(config)
     ToggleBtn.Parent = screenGui
 
     local BtnCorner = Instance.new("UICorner")
-    BtnCorner.CornerRadius = UDim.new(1, 0)
+    BtnCorner.CornerRadius = UDim.new(0, 20)
     BtnCorner.Parent = ToggleBtn
 
     local BtnStroke = Instance.new("UIStroke")
     BtnStroke.Color = Color3.fromRGB(60, 60, 70)
     BtnStroke.Thickness = 2
-    BtnStroke.Transparency = 0.2
+    BtnStroke.Transparency = 1
     BtnStroke.Parent = ToggleBtn
 
     local dragging = false
