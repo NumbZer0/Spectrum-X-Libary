@@ -330,7 +330,7 @@ function SpectrumUI:CreateWindow(config)
     local ButtonStroke = Instance.new("UIStroke")
     ButtonStroke.Color = Color3.fromRGB(60, 60, 70)
     ButtonStroke.Thickness = 2
-    ButtonStroke.Transparency = 0.2
+    ButtonStroke.Transparency = 0
     ButtonStroke.Parent = ButtonFrame
 
     local ButtonLabel = Instance.new("TextLabel")
