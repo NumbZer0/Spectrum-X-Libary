@@ -314,24 +314,37 @@ function SpectrumUI:CreateWindow(config)
         end
 
         function Tab:Button(btnConfig)
+    -- FRAME EXTERNO (igual InputFrame)
+    local ButtonContainer = Instance.new("Frame")
+    ButtonContainer.Size = UDim2.new(1, 0, 0, 40)
+    ButtonContainer.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    ButtonContainer.BorderSizePixel = 0
+    ButtonContainer.Parent = ScrollingFrame
+    
+    local ContainerCorner = Instance.new("UICorner")
+    ContainerCorner.CornerRadius = UDim.new(0, 10)
+    ContainerCorner.Parent = ButtonContainer
+    
+    -- BORDA DO FRAME EXTERNO
+    local ContainerStroke = Instance.new("UIStroke")
+    ContainerStroke.Color = Color3.fromRGB(60, 60, 70)
+    ContainerStroke.Thickness = 2
+    ContainerStroke.Transparency = 0.2
+    ContainerStroke.Parent = ButtonContainer
+
+    -- BOTÃO INTERNO (seu código original)
     local ButtonFrame = Instance.new("TextButton")
-    ButtonFrame.Size = UDim2.new(1, 0, 0, 40)
-    ButtonFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
+    ButtonFrame.Size = UDim2.new(1, 0, 1, 0)
+    ButtonFrame.Position = UDim2.new(0, 0, 0, 0)
+    ButtonFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     ButtonFrame.Text = ""
     ButtonFrame.AutoButtonColor = false
     ButtonFrame.BorderSizePixel = 0
-    ButtonFrame.Parent = ScrollingFrame
+    ButtonFrame.Parent = ButtonContainer
 
     local ButtonCorner = Instance.new("UICorner")
     ButtonCorner.CornerRadius = UDim.new(0, 10)
     ButtonCorner.Parent = ButtonFrame
-
-    -- BORDA CINZA IGUAL A INPUT BOX
-    local ButtonStroke = Instance.new("UIStroke")
-    ButtonStroke.Color = Color3.fromRGB(60, 60, 70)
-    ButtonStroke.Thickness = 2
-    ButtonStroke.Transparency = 0
-    ButtonStroke.Parent = ButtonFrame
 
     local ButtonLabel = Instance.new("TextLabel")
     ButtonLabel.Size = UDim2.new(1, -44, 1, 0)
