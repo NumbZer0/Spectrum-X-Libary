@@ -314,56 +314,57 @@ function SpectrumUI:CreateWindow(config)
         end
 
         function Tab:Button(btnConfig)
-            local ButtonFrame = Instance.new("TextButton")
-            ButtonFrame.Size = UDim2.new(1, 0, 0, 40)
-            ButtonFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
-            ButtonFrame.Text = ""
-            ButtonFrame.AutoButtonColor = false
-            ButtonFrame.BorderSizePixel = 0
-            ButtonFrame.Parent = ScrollingFrame
+    local ButtonFrame = Instance.new("TextButton")
+    ButtonFrame.Size = UDim2.new(1, 0, 0, 40)
+    ButtonFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- PRETO!
+    ButtonFrame.Text = ""
+    ButtonFrame.AutoButtonColor = false
+    ButtonFrame.BorderSizePixel = 0
+    ButtonFrame.Parent = ScrollingFrame
 
-            local ButtonCorner = Instance.new("UICorner")
-            ButtonCorner.CornerRadius = UDim.new(0, 10)
-            ButtonCorner.Parent = ButtonFrame
+    local ButtonCorner = Instance.new("UICorner")
+    ButtonCorner.CornerRadius = UDim.new(0, 10)
+    ButtonCorner.Parent = ButtonFrame
 
-            local ButtonStroke = Instance.new("UIStroke")
-            ButtonStroke.Color = Color3.fromRGB(60, 60, 70)
-            ButtonStroke.Thickness = 2
-            ButtonStroke.Transparency = 0.2
-            ButtonStroke.Parent = ButtonFrame
+    -- BORDA CINZA IGUAL A INPUT BOX
+    local ButtonStroke = Instance.new("UIStroke")
+    ButtonStroke.Color = Color3.fromRGB(60, 60, 70)
+    ButtonStroke.Thickness = 2
+    ButtonStroke.Transparency = 0.2
+    ButtonStroke.Parent = ButtonFrame
 
-            local ButtonLabel = Instance.new("TextLabel")
-            ButtonLabel.Size = UDim2.new(1, -44, 1, 0)
-            ButtonLabel.Position = UDim2.new(0, 10, 0, 0)
-            ButtonLabel.BackgroundTransparency = 1
-            ButtonLabel.Text = btnConfig.Name or "Button"
-            ButtonLabel.Font = Enum.Font.GothamBold
-            ButtonLabel.TextSize = 15
-            ButtonLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-            ButtonLabel.TextXAlignment = Enum.TextXAlignment.Center
-            ButtonLabel.Parent = ButtonFrame
+    local ButtonLabel = Instance.new("TextLabel")
+    ButtonLabel.Size = UDim2.new(1, -44, 1, 0)
+    ButtonLabel.Position = UDim2.new(0, 10, 0, 0)
+    ButtonLabel.BackgroundTransparency = 1
+    ButtonLabel.Text = btnConfig.Name or "Button"
+    ButtonLabel.Font = Enum.Font.GothamBold
+    ButtonLabel.TextSize = 15
+    ButtonLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ButtonLabel.TextXAlignment = Enum.TextXAlignment.Center
+    ButtonLabel.Parent = ButtonFrame
 
-            local ClickIcon = Instance.new("ImageLabel")
-            ClickIcon.Size = UDim2.new(0, 26, 0, 26)
-            ClickIcon.Position = UDim2.new(1, -32, 0.5, -13)
-            ClickIcon.BackgroundTransparency = 1
-            ClickIcon.Image = btnConfig.ClickIconId or "rbxassetid://10366495969"
-            ClickIcon.Parent = ButtonFrame
+    local ClickIcon = Instance.new("ImageLabel")
+    ClickIcon.Size = UDim2.new(0, 26, 0, 26)
+    ClickIcon.Position = UDim2.new(1, -32, 0.5, -13)
+    ClickIcon.BackgroundTransparency = 1
+    ClickIcon.Image = btnConfig.ClickIconId or "rbxassetid://10366495969"
+    ClickIcon.Parent = ButtonFrame
 
-            ButtonFrame.MouseEnter:Connect(function()
-                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
-            end)
+    ButtonFrame.MouseEnter:Connect(function()
+        TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(30, 30, 30)}):Play()
+    end)
 
-            ButtonFrame.MouseLeave:Connect(function()
-                TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 0, 0)}):Play()
-            end)
+    ButtonFrame.MouseLeave:Connect(function()
+        TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 0, 0)}):Play()
+    end)
 
-            ButtonFrame.MouseButton1Click:Connect(function()
-                if btnConfig.Callback then
-                    btnConfig.Callback()
-                end
-            end)
+    ButtonFrame.MouseButton1Click:Connect(function()
+        if btnConfig.Callback then
+            btnConfig.Callback()
         end
+    end)
+end
 
         function Tab:Notice(noticeConfig)
             local frame = Instance.new("Frame")
