@@ -192,9 +192,22 @@ SidebarCorner.CornerRadius = UDim.new(0, 10)
 SidebarCorner.Parent = Sidebar
 
 -- ADICIONAR SCROLL AQUI (A ÚNICA MUDANÇA)
+local Sidebar = Instance.new("Frame")
+Sidebar.Size = UDim2.new(0, 140, 1, -75)
+Sidebar.Position = UDim2.new(0, 10, 0, 70)
+Sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Sidebar.BackgroundTransparency = 1  -- ADICIONA AQUI
+Sidebar.BorderSizePixel = 0
+Sidebar.Parent = MainFrame
+
+local SidebarCorner = Instance.new("UICorner")
+SidebarCorner.CornerRadius = UDim.new(0, 10)
+SidebarCorner.Parent = Sidebar
+
 local SidebarScroll = Instance.new("ScrollingFrame")
 SidebarScroll.Size = UDim2.new(1, 0, 1, 0)
-SidebarScroll.BackgroundTransparency = 1
+SidebarScroll.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+SidebarScroll.BackgroundTransparency = 1  -- ADICIONA AQUI
 SidebarScroll.BorderSizePixel = 0
 SidebarScroll.ScrollBarThickness = 4
 SidebarScroll.ScrollBarImageColor3 = Color3.fromRGB(128, 0, 0)
