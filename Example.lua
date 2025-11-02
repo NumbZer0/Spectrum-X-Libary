@@ -683,7 +683,7 @@ function Tab:Slider(sliderConfig)
     SliderStroke.Transparency = 0.2
     SliderStroke.Parent = SliderFrame
 
-    -- TEXTO DO SLIDER (lado esquerdo)
+    -- TEXTO DO SLIDER
     local SliderLabel = Instance.new("TextLabel")
     SliderLabel.Size = UDim2.new(0.6, -10, 0, 20)
     SliderLabel.Position = UDim2.new(0, 12, 0, 8)
@@ -695,7 +695,7 @@ function Tab:Slider(sliderConfig)
     SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
     SliderLabel.Parent = SliderFrame
 
-    -- INPUT BOX (lado direito)
+    -- INPUT BOX
     local InputBox = Instance.new("TextBox")
     InputBox.Size = UDim2.new(0.3, -10, 0, 25)
     InputBox.Position = UDim2.new(0.7, 5, 0, 8)
@@ -725,10 +725,10 @@ function Tab:Slider(sliderConfig)
     TrackCorner.CornerRadius = UDim.new(1, 0)
     TrackCorner.Parent = SliderTrack
 
-    -- BARRA DE PROGRESSO (vermelha) - SEM BOLINHA
+    -- BARRA DE PROGRESSO (vermelha)
     local SliderProgress = Instance.new("Frame")
     SliderProgress.Size = UDim2.new(0, 0, 1, 0)
-    SliderProgress.BackgroundColor3 = Color3.fromRGB(128, 0, 0)  -- Vermelho escuro
+    SliderProgress.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
     SliderProgress.BorderSizePixel = 0
     SliderProgress.Parent = SliderTrack
 
@@ -766,23 +766,39 @@ function Tab:Slider(sliderConfig)
         end
     end)
 
-    -- ARRASTAR SLIDER (100% MOBILE) - SIMPLIFICADO SEM BOLINHA
-    local function updateSliderFromInput(input)
-        local trackAbsolutePos = SliderTrack.AbsolutePosition.X
-        local trackAbsoluteSize = SliderTrack.AbsoluteSize.X
-        local inputAbsolutePos = input.Position.X
-        
-        local relativePos = math.clamp(inputAbsolutePos - trackAbsolutePos, 0, trackAbsoluteSize)
-        local percent = relativePos / trackAbsoluteSize
-        local value = min + (max - min) * percent
-        
-        updateSlider(value)
+    -- ⚠️ SISTEMA DE ARRASTAR SIMPLES QUE FUNCIONA
+    local dragging = false
+    
+    local function updateFromMouse()
+        if dragging then
+            local mouse = game:GetService("Players").LocalPlayer:GetMouse()
+            local trackAbsolutePos = SliderTrack.AbsolutePosition.X
+            local trackAbsoluteSize = SliderTrack.AbsoluteSize.X
+            local mouseX = mouse.X
+            
+            local relativePos = math.clamp(mouseX - trackAbsolutePos, 0, trackAbsoluteSize)
+            local percent = relativePos / trackAbsoluteSize
+            local value = min + (max - min) * percent
+            
+            updateSlider(value)
+        end
     end
 
-    -- CLIQUE DIRETO NA BARRA (FUNCIONAL)
-    SliderTrack.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            updateSliderFromInput(input)
+    -- EVENTOS SIMPLES QUE FUNCIONAM
+    SliderTrack.MouseButton1Down:Connect(function()
+        dragging = true
+    end)
+    
+    game:GetService("UserInputService").InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+    
+    -- ATUALIZAR ENQUANTO ARRASTA
+    game:GetService("RunService").Heartbeat:Connect(function()
+        if dragging then
+            updateFromMouse()
         end
     end)
 
