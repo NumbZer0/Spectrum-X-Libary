@@ -665,6 +665,171 @@ end
     end
 end
 
+---- Slider com InputBox fi hehehe
+function Tab:Slider(sliderConfig)
+    local SliderFrame = Instance.new("Frame")
+    SliderFrame.Size = UDim2.new(1, 0, 0, 70)
+    SliderFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    SliderFrame.BorderSizePixel = 0
+    SliderFrame.Parent = ScrollingFrame
+
+    local SliderCorner = Instance.new("UICorner")
+    SliderCorner.CornerRadius = UDim.new(0, 10)
+    SliderCorner.Parent = SliderFrame
+
+    local SliderStroke = Instance.new("UIStroke")
+    SliderStroke.Color = Color3.fromRGB(60, 60, 70)  -- Borda cinza escuro
+    SliderStroke.Thickness = 2
+    SliderStroke.Transparency = 0.2
+    SliderStroke.Parent = SliderFrame
+
+    -- TEXTO DO SLIDER (lado esquerdo)
+    local SliderLabel = Instance.new("TextLabel")
+    SliderLabel.Size = UDim2.new(0.6, -10, 0, 20)
+    SliderLabel.Position = UDim2.new(0, 12, 0, 8)
+    SliderLabel.BackgroundTransparency = 1
+    SliderLabel.Text = sliderConfig.Name or "Slider"
+    SliderLabel.Font = Enum.Font.GothamBold
+    SliderLabel.TextSize = 13
+    SliderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
+    SliderLabel.Parent = SliderFrame
+
+    -- INPUT BOX (lado direito)
+    local InputBox = Instance.new("TextBox")
+    InputBox.Size = UDim2.new(0.3, -10, 0, 25)
+    InputBox.Position = UDim2.new(0.7, 5, 0, 8)
+    InputBox.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+    InputBox.BorderSizePixel = 0
+    InputBox.Text = tostring(sliderConfig.Default or sliderConfig.Min or 0)
+    InputBox.PlaceholderText = "Value"
+    InputBox.Font = Enum.Font.Gotham
+    InputBox.TextSize = 12
+    InputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    InputBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+    InputBox.Parent = SliderFrame
+
+    local InputCorner = Instance.new("UICorner")
+    InputCorner.CornerRadius = UDim.new(0, 6)
+    InputCorner.Parent = InputBox
+
+    -- BARRA DO SLIDER
+    local SliderTrack = Instance.new("Frame")
+    SliderTrack.Size = UDim2.new(1, -24, 0, 6)
+    SliderTrack.Position = UDim2.new(0, 12, 0, 40)
+    SliderTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+    SliderTrack.BorderSizePixel = 0
+    SliderTrack.Parent = SliderFrame
+
+    local TrackCorner = Instance.new("UICorner")
+    TrackCorner.CornerRadius = UDim.new(1, 0)
+    TrackCorner.Parent = SliderTrack
+
+    -- BARRA DE PROGRESSO (vermelha)
+    local SliderProgress = Instance.new("Frame")
+    SliderProgress.Size = UDim2.new(0, 0, 1, 0)
+    SliderProgress.BackgroundColor3 = Color3.fromRGB(128, 0, 0)  -- Vermelho escuro
+    SliderProgress.BorderSizePixel = 0
+    SliderProgress.Parent = SliderTrack
+
+    local ProgressCorner = Instance.new("UICorner")
+    ProgressCorner.CornerRadius = UDim.new(1, 0)
+    ProgressCorner.Parent = SliderProgress
+
+    -- BOLINHA DO SLIDER (branca)
+    local SliderButton = Instance.new("TextButton")
+    SliderButton.Size = UDim2.new(0, 18, 0, 18)
+    SliderButton.Position = UDim2.new(0, -9, 0.5, -9)
+    SliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- Branca
+    SliderButton.BorderSizePixel = 0
+    SliderButton.Text = ""
+    SliderButton.ZIndex = 2
+    SliderButton.Parent = SliderProgress
+
+    local ButtonCorner = Instance.new("UICorner")
+    ButtonCorner.CornerRadius = UDim.new(1, 0)
+    ButtonCorner.Parent = SliderButton
+
+    -- CONFIGURAÇÕES
+    local min = sliderConfig.Min or 0
+    local max = sliderConfig.Max or 100
+    local default = sliderConfig.Default or min
+    local currentValue = default
+
+    -- FUNÇÃO PARA ATUALIZAR SLIDER
+    local function updateSlider(value)
+        value = math.clamp(value, min, max)
+        currentValue = value
+        
+        local percent = (value - min) / (max - min)
+        SliderProgress.Size = UDim2.new(percent, 0, 1, 0)
+        InputBox.Text = tostring(math.floor(value))
+        
+        if sliderConfig.Callback then
+            sliderConfig.Callback(value)
+        end
+    end
+
+    -- INPUT DO TECLADO
+    InputBox.FocusLost:Connect(function()
+        local num = tonumber(InputBox.Text)
+        if num then
+            updateSlider(num)
+        else
+            InputBox.Text = tostring(currentValue)
+        end
+    end)
+
+    -- ARRASTAR SLIDER (100% MOBILE)
+    local function updateSliderFromInput(input)
+        local trackAbsolutePos = SliderTrack.AbsolutePosition.X
+        local trackAbsoluteSize = SliderTrack.AbsoluteSize.X
+        local inputAbsolutePos = input.Position.X
+        
+        local relativePos = math.clamp(inputAbsolutePos - trackAbsolutePos, 0, trackAbsoluteSize)
+        local percent = relativePos / trackAbsoluteSize
+        local value = min + (max - min) * percent
+        
+        updateSlider(value)
+    end
+
+    SliderButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            local connection
+            connection = input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    connection:Disconnect()
+                else
+                    updateSliderFromInput(input)
+                end
+            end)
+        end
+    end)
+
+    SliderTrack.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            updateSliderFromInput(input)
+        end
+    end)
+
+    -- MOBILE: Suporte a arrastar em qualquer lugar do slider
+    UserInputService.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            if SliderButton:IsActive() or SliderTrack:IsActive() then
+                updateSliderFromInput(input)
+            end
+        end
+    end)
+
+    -- VALOR INICIAL
+    updateSlider(default)
+
+    return {
+        SetValue = updateSlider,
+        GetValue = function() return currentValue end
+    }
+end
+
         function Tab:Dropdown(dropConfig)
             local DropdownFrame = Instance.new("Frame")
             DropdownFrame.Size = UDim2.new(1, 0, 0, 45)
