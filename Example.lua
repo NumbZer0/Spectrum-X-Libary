@@ -179,22 +179,22 @@ function SpectrumUI:CreateWindow(config)
     MinimizeCorner.CornerRadius = UDim.new(0, 8)
     MinimizeCorner.Parent = MinimizeButton
 
--- ========== SIDEBAR COM SCROLLING FRAME (SEM FUNDO BRANCO) ==========
+-- ========== SIDEBAR ORIGINAL COM SCROLL ADICIONADO ==========
 local Sidebar = Instance.new("Frame")
 Sidebar.Size = UDim2.new(0, 140, 1, -75)
 Sidebar.Position = UDim2.new(0, 10, 0, 70)
-Sidebar.BackgroundTransparency = 1  -- TOTALMENTE TRANSPARENTE
+Sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 Sidebar.BorderSizePixel = 0
-Sidebar.ClipsDescendants = true
 Sidebar.Parent = MainFrame
 
--- SEM UICorner pra não criar fundo!
+local SidebarCorner = Instance.new("UICorner")
+SidebarCorner.CornerRadius = UDim.new(0, 10)
+SidebarCorner.Parent = Sidebar
 
--- SCROLLING FRAME DENTRO DA SIDEBAR
+-- ADICIONAR SCROLL AQUI (A ÚNICA MUDANÇA)
 local SidebarScroll = Instance.new("ScrollingFrame")
 SidebarScroll.Size = UDim2.new(1, 0, 1, 0)
-SidebarScroll.Position = UDim2.new(0, 0, 0, 0)
-SidebarScroll.BackgroundTransparency = 1  -- TRANSPARENTE
+SidebarScroll.BackgroundTransparency = 1
 SidebarScroll.BorderSizePixel = 0
 SidebarScroll.ScrollBarThickness = 4
 SidebarScroll.ScrollBarImageColor3 = Color3.fromRGB(128, 0, 0)
@@ -202,16 +202,15 @@ SidebarScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 SidebarScroll.Parent = Sidebar
 
 local TabList = Instance.new("UIListLayout")
-TabList.Padding = UDim.new(0, 8)  -- Botões mais pertos
+TabList.Padding = UDim.new(0, 8)  -- Mais perto (era 14)
 TabList.SortOrder = Enum.SortOrder.LayoutOrder
-TabList.Parent = SidebarScroll
+TabList.Parent = SidebarScroll  -- AQUI NO SCROLL, NÃO NA SIDEBAR
 
 local TabPadding = Instance.new("UIPadding")
 TabPadding.PaddingTop = UDim.new(0, 10)
 TabPadding.PaddingLeft = UDim.new(0, 10)
 TabPadding.PaddingRight = UDim.new(0, 10)
-TabPadding.PaddingBottom = UDim.new(0, 10)
-TabPadding.Parent = SidebarScroll
+TabPadding.Parent = SidebarScroll  -- AQUI NO SCROLL
 
 -- Auto-ajustar CanvasSize
 TabList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
