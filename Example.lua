@@ -683,7 +683,7 @@ function Tab:Slider(sliderConfig)
     SliderStroke.Transparency = 0.2
     SliderStroke.Parent = SliderFrame
 
-    -- TEXTO DO SLIDER
+    -- TEXTO DO SLIDER (lado esquerdo)
     local SliderLabel = Instance.new("TextLabel")
     SliderLabel.Size = UDim2.new(0.6, -10, 0, 20)
     SliderLabel.Position = UDim2.new(0, 12, 0, 8)
@@ -695,7 +695,7 @@ function Tab:Slider(sliderConfig)
     SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
     SliderLabel.Parent = SliderFrame
 
-    -- INPUT BOX
+    -- INPUT BOX (lado direito)
     local InputBox = Instance.new("TextBox")
     InputBox.Size = UDim2.new(0.3, -10, 0, 25)
     InputBox.Position = UDim2.new(0.7, 5, 0, 8)
@@ -725,10 +725,10 @@ function Tab:Slider(sliderConfig)
     TrackCorner.CornerRadius = UDim.new(1, 0)
     TrackCorner.Parent = SliderTrack
 
-    -- BARRA DE PROGRESSO (vermelha)
+    -- BARRA DE PROGRESSO (vermelha) - SEM BOLINHA
     local SliderProgress = Instance.new("Frame")
     SliderProgress.Size = UDim2.new(0, 0, 1, 0)
-    SliderProgress.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
+    SliderProgress.BackgroundColor3 = Color3.fromRGB(128, 0, 0)  -- Vermelho escuro
     SliderProgress.BorderSizePixel = 0
     SliderProgress.Parent = SliderTrack
 
@@ -736,34 +736,19 @@ function Tab:Slider(sliderConfig)
     ProgressCorner.CornerRadius = UDim.new(1, 0)
     ProgressCorner.Parent = SliderProgress
 
-    -- BOLINHA DO SLIDER (branca)
-    local SliderButton = Instance.new("TextButton")
-    SliderButton.Size = UDim2.new(0, 18, 0, 18)
-    SliderButton.Position = UDim2.new(0, -9, 0.5, -9)
-    SliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    SliderButton.BorderSizePixel = 0
-    SliderButton.Text = ""
-    SliderButton.ZIndex = 2
-    SliderButton.Parent = SliderProgress
-
-    local ButtonCorner = Instance.new("UICorner")
-    ButtonCorner.CornerRadius = UDim.new(1, 0)
-    ButtonCorner.Parent = SliderButton
-
     -- CONFIGURAÇÕES
     local min = sliderConfig.Min or 0
     local max = sliderConfig.Max or 100
     local default = sliderConfig.Default or min
     local currentValue = default
 
-    -- FUNÇÃO PARA ATUALIZAR SLIDER (SIMPLES E FUNCIONAL)
+    -- FUNÇÃO PARA ATUALIZAR SLIDER
     local function updateSlider(value)
         value = math.clamp(value, min, max)
         currentValue = value
         
         local percent = (value - min) / (max - min)
         SliderProgress.Size = UDim2.new(percent, 0, 1, 0)
-        SliderButton.Position = UDim2.new(percent, -9, 0.5, -9)
         InputBox.Text = tostring(math.floor(value))
         
         if sliderConfig.Callback then
@@ -781,37 +766,24 @@ function Tab:Slider(sliderConfig)
         end
     end)
 
-    -- SISTEMA DE ARRASTAR SIMPLIFICADO
-    local function updateFromInput(input)
+    -- ARRASTAR SLIDER (100% MOBILE) - SIMPLIFICADO SEM BOLINHA
+    local function updateSliderFromInput(input)
         local trackAbsolutePos = SliderTrack.AbsolutePosition.X
         local trackAbsoluteSize = SliderTrack.AbsoluteSize.X
-        local inputX = input.Position.X
+        local inputAbsolutePos = input.Position.X
         
-        local relativePos = math.clamp(inputX - trackAbsolutePos, 0, trackAbsoluteSize)
+        local relativePos = math.clamp(inputAbsolutePos - trackAbsolutePos, 0, trackAbsoluteSize)
         local percent = relativePos / trackAbsoluteSize
         local value = min + (max - min) * percent
         
         updateSlider(value)
     end
 
-    -- EVENTOS DE CLIQUE (FUNCIONAL)
-    SliderButton.MouseButton1Down:Connect(function(input)
-        local connection
-        connection = game:GetService("UserInputService").InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement then
-                updateFromInput(input)
-            end
-        end)
-        
-        game:GetService("UserInputService").InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                connection:Disconnect()
-            end
-        end)
-    end)
-
-    SliderTrack.MouseButton1Down:Connect(function(input)
-        updateFromInput(input)
+    -- CLIQUE DIRETO NA BARRA (FUNCIONAL)
+    SliderTrack.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            updateSliderFromInput(input)
+        end
     end)
 
     -- VALOR INICIAL
@@ -820,7 +792,7 @@ function Tab:Slider(sliderConfig)
     return {
         SetValue = updateSlider,
         GetValue = function() return currentValue end
-    end
+    }
 end
 
         function Tab:Dropdown(dropConfig)
