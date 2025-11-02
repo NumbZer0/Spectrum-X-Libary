@@ -678,7 +678,7 @@ function Tab:Slider(sliderConfig)
     SliderCorner.Parent = SliderFrame
 
     local SliderStroke = Instance.new("UIStroke")
-    SliderStroke.Color = Color3.fromRGB(60, 60, 70)
+    SliderStroke.Color = Color3.fromRGB(60, 60, 70)  -- Borda cinza escuro
     SliderStroke.Thickness = 2
     SliderStroke.Transparency = 0.2
     SliderStroke.Parent = SliderFrame
@@ -725,16 +725,31 @@ function Tab:Slider(sliderConfig)
     TrackCorner.CornerRadius = UDim.new(1, 0)
     TrackCorner.Parent = SliderTrack
 
-    -- BARRA DE PROGRESSO (vermelha) - SEM BOLINHA
+    -- BARRA DE PROGRESSO (vermelha)
     local SliderProgress = Instance.new("Frame")
     SliderProgress.Size = UDim2.new(0, 0, 1, 0)
-    SliderProgress.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
+    SliderProgress.BackgroundColor3 = Color3.fromRGB(128, 0, 0)  -- Vermelho escuro
     SliderProgress.BorderSizePixel = 0
     SliderProgress.Parent = SliderTrack
 
     local ProgressCorner = Instance.new("UICorner")
     ProgressCorner.CornerRadius = UDim.new(1, 0)
     ProgressCorner.Parent = SliderProgress
+
+    -- BOLINHA DO SLIDER (branca)
+    local SliderButton = Instance.new("TextButton")
+    SliderButton.Size = UDim2.new(0, 18, 0, 18)
+    SliderButton.Position = UDim2.new(0, -9, 0.5, -9)
+    SliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- Branca
+    SliderButton.BorderSizePixel = 0
+    SliderButton.Text = ""
+    SliderButton.ZIndex = 2
+    SliderButton.Transparency = 1
+    SliderButton.Parent = SliderProgress
+
+    local ButtonCorner = Instance.new("UICorner")
+    ButtonCorner.CornerRadius = UDim.new(1, 0)
+    ButtonCorner.Parent = SliderButton
 
     -- CONFIGURAÇÕES
     local min = sliderConfig.Min or 0
@@ -766,7 +781,7 @@ function Tab:Slider(sliderConfig)
         end
     end)
 
-    -- ARRASTAR SLIDER (100% MOBILE) - SÓ CLIQUE NA BARRA
+    -- ARRASTAR SLIDER (100% MOBILE)
     local function updateSliderFromInput(input)
         local trackAbsolutePos = SliderTrack.AbsolutePosition.X
         local trackAbsoluteSize = SliderTrack.AbsoluteSize.X
@@ -779,10 +794,31 @@ function Tab:Slider(sliderConfig)
         updateSlider(value)
     end
 
-    -- SÓ CLIQUE NA BARRA (SEM BOLINHA)
+    SliderButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            local connection
+            connection = input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    connection:Disconnect()
+                else
+                    updateSliderFromInput(input)
+                end
+            end)
+        end
+    end)
+
     SliderTrack.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             updateSliderFromInput(input)
+        end
+    end)
+
+    -- MOBILE: Suporte a arrastar em qualquer lugar do slider
+    UserInputService.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            if SliderButton:IsActive() or SliderTrack:IsActive() then
+                updateSliderFromInput(input)
+            end
         end
     end)
 
