@@ -756,17 +756,14 @@ function Tab:Slider(sliderConfig)
     local default = sliderConfig.Default or min
     local currentValue = default
 
-    -- FUNÇÃO PARA ATUALIZAR SLIDER (CORRIGIDA)
+    -- FUNÇÃO PARA ATUALIZAR SLIDER (SIMPLES E FUNCIONAL)
     local function updateSlider(value)
         value = math.clamp(value, min, max)
         currentValue = value
         
         local percent = (value - min) / (max - min)
         SliderProgress.Size = UDim2.new(percent, 0, 1, 0)
-        
-        -- ⚠️ LINHA QUE FALTOU: Atualizar posição da bolinha!
         SliderButton.Position = UDim2.new(percent, -9, 0.5, -9)
-        
         InputBox.Text = tostring(math.floor(value))
         
         if sliderConfig.Callback then
@@ -784,43 +781,38 @@ function Tab:Slider(sliderConfig)
         end
     end)
 
-    -- SISTEMA DE ARRASTAR CORRIGIDO (MOBILE FRIENDLY)
-    local dragging = false
-    
-    local function startDragging()
-        dragging = true
-    end
-    
-    local function stopDragging()
-        dragging = false
-    end
-    
-    local function updateFromMouse()
-        if dragging then
-            local mouse = game:GetService("Players").LocalPlayer:GetMouse()
-            local trackAbsolutePos = SliderTrack.AbsolutePosition.X
-            local trackAbsoluteSize = SliderTrack.AbsoluteSize.X
-            local mouseX = mouse.X
-            
-            local relativePos = math.clamp(mouseX - trackAbsolutePos, 0, trackAbsoluteSize)
-            local percent = relativePos / trackAbsoluteSize
-            local value = min + (max - min) * percent
-            
-            updateSlider(value)
-        end
+    -- SISTEMA DE ARRASTAR SIMPLIFICADO
+    local function updateFromInput(input)
+        local trackAbsolutePos = SliderTrack.AbsolutePosition.X
+        local trackAbsoluteSize = SliderTrack.AbsoluteSize.X
+        local inputX = input.Position.X
+        
+        local relativePos = math.clamp(inputX - trackAbsolutePos, 0, trackAbsoluteSize)
+        local percent = relativePos / trackAbsoluteSize
+        local value = min + (max - min) * percent
+        
+        updateSlider(value)
     end
 
-    -- CONECTAR EVENTOS
-    SliderButton.MouseButton1Down:Connect(startDragging)
-    SliderTrack.MouseButton1Down:Connect(startDragging)
-    
-    game:GetService("UserInputService").InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            stopDragging()
-        end
+    -- EVENTOS DE CLIQUE (FUNCIONAL)
+    SliderButton.MouseButton1Down:Connect(function(input)
+        local connection
+        connection = game:GetService("UserInputService").InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement then
+                updateFromInput(input)
+            end
+        end)
+        
+        game:GetService("UserInputService").InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                connection:Disconnect()
+            end
+        end)
     end)
-    
-    game:GetService("RunService").Heartbeat:Connect(updateFromMouse)
+
+    SliderTrack.MouseButton1Down:Connect(function(input)
+        updateFromInput(input)
+    end)
 
     -- VALOR INICIAL
     updateSlider(default)
@@ -828,7 +820,7 @@ function Tab:Slider(sliderConfig)
     return {
         SetValue = updateSlider,
         GetValue = function() return currentValue end
-    }
+    end
 end
 
         function Tab:Dropdown(dropConfig)
