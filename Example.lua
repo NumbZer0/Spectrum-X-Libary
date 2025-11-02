@@ -179,15 +179,16 @@ function SpectrumUI:CreateWindow(config)
     MinimizeCorner.CornerRadius = UDim.new(0, 8)
     MinimizeCorner.Parent = MinimizeButton
 
--- ========== SIDEBAR COM SCROLLING FRAME (BONITA) ==========
+-- ========== SIDEBAR COM SCROLLING FRAME (SEM FUNDO BRANCO) ==========
 local Sidebar = Instance.new("Frame")
 Sidebar.Size = UDim2.new(0, 140, 1, -75)
 Sidebar.Position = UDim2.new(0, 10, 0, 70)
-Sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Sidebar.BackgroundTransparency = 0  -- TRANSPARENTE
+Sidebar.BackgroundTransparency = 1  -- TOTALMENTE TRANSPARENTE
 Sidebar.BorderSizePixel = 0
 Sidebar.ClipsDescendants = true
 Sidebar.Parent = MainFrame
+
+-- SEM UICorner pra não criar fundo!
 
 -- SCROLLING FRAME DENTRO DA SIDEBAR
 local SidebarScroll = Instance.new("ScrollingFrame")
@@ -201,7 +202,7 @@ SidebarScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 SidebarScroll.Parent = Sidebar
 
 local TabList = Instance.new("UIListLayout")
-TabList.Padding = UDim.new(0, 8)  -- MENOS ESPAÇO (era 14)
+TabList.Padding = UDim.new(0, 8)  -- Botões mais pertos
 TabList.SortOrder = Enum.SortOrder.LayoutOrder
 TabList.Parent = SidebarScroll
 
@@ -424,48 +425,50 @@ end
 end
 
         function Tab:Notice(noticeConfig)
-            local frame = Instance.new("Frame")
-            frame.Size = UDim2.new(1, 0, 0, 60)
-            frame.BackgroundColor3 = noticeConfig.Color or Color3.fromRGB(255, 230, 180)
-            frame.BorderSizePixel = 0
-            frame.Parent = ScrollingFrame
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(1, 0, 0, 60)
+    frame.BackgroundColor3 = noticeConfig.Color or Color3.fromRGB(255, 230, 180)
+    frame.BorderSizePixel = 0
+    frame.Parent = ScrollingFrame
 
-            local corner = Instance.new("UICorner")
-            corner.CornerRadius = UDim.new(0, 12)
-            corner.Parent = frame
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 12)
+    corner.Parent = frame
 
-            local icon = Instance.new("ImageLabel")
-            icon.Size = UDim2.new(0, 34, 0, 34)
-            icon.Position = UDim2.new(0, 10, 0, 13)
-            icon.BackgroundTransparency = 1
-            icon.Image = "rbxassetid://4871684504"
-            icon.Parent = frame
+    -- ÍCONE COM SUPORTE PERSONALIZADO
+    local icon = Instance.new("ImageLabel")
+    icon.Size = UDim2.new(0, 34, 0, 34)
+    icon.Position = UDim2.new(0, 10, 0, 13)
+    icon.BackgroundTransparency = 1
+    -- Se tiver IconId usa ele, senão usa o padrão
+    icon.Image = noticeConfig.IconId or "rbxassetid://4871684504"
+    icon.Parent = frame
 
-            local title = Instance.new("TextLabel")
-            title.Size = UDim2.new(1, -60, 0, 24)
-            title.Position = UDim2.new(0, 54, 0, 8)
-            title.BackgroundTransparency = 1
-            title.Text = noticeConfig.Title or "Aviso"
-            title.Font = Enum.Font.GothamBold
-            title.TextSize = 15
-            title.TextColor3 = Color3.fromRGB(255,255,255)
-            title.TextXAlignment = Enum.TextXAlignment.Left
-            title.Parent = frame
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, -60, 0, 24)
+    title.Position = UDim2.new(0, 54, 0, 8)
+    title.BackgroundTransparency = 1
+    title.Text = noticeConfig.Title or "Aviso"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 15
+    title.TextColor3 = Color3.fromRGB(255,255,255)
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.Parent = frame
 
-            if noticeConfig.Subtitle then
-                local subtitle = Instance.new("TextLabel")
-                subtitle.Size = UDim2.new(1, -60, 0, 18)
-                subtitle.Position = UDim2.new(0, 54, 0, 32)
-                subtitle.BackgroundTransparency = 1
-                subtitle.Text = noticeConfig.Subtitle
-                subtitle.Font = Enum.Font.Gotham
-                subtitle.TextSize = 12
-                subtitle.TextColor3 = Color3.fromRGB(255,255,255)
-                subtitle.TextXAlignment = Enum.TextXAlignment.Left
-                subtitle.TextWrapped = true
-                subtitle.Parent = frame
-            end
-        end
+    if noticeConfig.Subtitle then
+        local subtitle = Instance.new("TextLabel")
+        subtitle.Size = UDim2.new(1, -60, 0, 18)
+        subtitle.Position = UDim2.new(0, 54, 0, 32)
+        subtitle.BackgroundTransparency = 1
+        subtitle.Text = noticeConfig.Subtitle
+        subtitle.Font = Enum.Font.Gotham
+        subtitle.TextSize = 12
+        subtitle.TextColor3 = Color3.fromRGB(255,255,255)
+        subtitle.TextXAlignment = Enum.TextXAlignment.Left
+        subtitle.TextWrapped = true
+        subtitle.Parent = frame
+    end
+end
 
         function Tab:Toggle(toggleConfig)
             local descText = toggleConfig.Description or ""
