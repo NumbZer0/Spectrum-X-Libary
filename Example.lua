@@ -179,35 +179,19 @@ function SpectrumUI:CreateWindow(config)
     MinimizeCorner.CornerRadius = UDim.new(0, 8)
     MinimizeCorner.Parent = MinimizeButton
 
--- ========== SIDEBAR ORIGINAL COM SCROLL ADICIONADO ==========
+-- ========== SIDEBAR (SÓ UMA VEZ!) ==========
 local Sidebar = Instance.new("Frame")
 Sidebar.Size = UDim2.new(0, 140, 1, -75)
 Sidebar.Position = UDim2.new(0, 10, 0, 70)
-Sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Sidebar.BackgroundTransparency = 1  -- JÁ COMEÇA TRANSPARENTE
 Sidebar.BorderSizePixel = 0
 Sidebar.Parent = MainFrame
 
-local SidebarCorner = Instance.new("UICorner")
-SidebarCorner.CornerRadius = UDim.new(0, 10)
-SidebarCorner.Parent = Sidebar
-
--- ADICIONAR SCROLL AQUI (A ÚNICA MUDANÇA)
-local Sidebar = Instance.new("Frame")
-Sidebar.Size = UDim2.new(0, 140, 1, -75)
-Sidebar.Position = UDim2.new(0, 10, 0, 70)
-Sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-Sidebar.BackgroundTransparency = 1  -- ADICIONA AQUI
-Sidebar.BorderSizePixel = 0
-Sidebar.Parent = MainFrame
-
-local SidebarCorner = Instance.new("UICorner")
-SidebarCorner.CornerRadius = UDim.new(0, 10)
-SidebarCorner.Parent = Sidebar
+-- SEM UICorner! (não precisa)
 
 local SidebarScroll = Instance.new("ScrollingFrame")
 SidebarScroll.Size = UDim2.new(1, 0, 1, 0)
-SidebarScroll.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-SidebarScroll.BackgroundTransparency = 1  -- ADICIONA AQUI
+SidebarScroll.BackgroundTransparency = 1
 SidebarScroll.BorderSizePixel = 0
 SidebarScroll.ScrollBarThickness = 4
 SidebarScroll.ScrollBarImageColor3 = Color3.fromRGB(128, 0, 0)
@@ -215,17 +199,16 @@ SidebarScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 SidebarScroll.Parent = Sidebar
 
 local TabList = Instance.new("UIListLayout")
-TabList.Padding = UDim.new(0, 8)  -- Mais perto (era 14)
+TabList.Padding = UDim.new(0, 8)
 TabList.SortOrder = Enum.SortOrder.LayoutOrder
-TabList.Parent = SidebarScroll  -- AQUI NO SCROLL, NÃO NA SIDEBAR
+TabList.Parent = SidebarScroll
 
 local TabPadding = Instance.new("UIPadding")
 TabPadding.PaddingTop = UDim.new(0, 10)
 TabPadding.PaddingLeft = UDim.new(0, 10)
 TabPadding.PaddingRight = UDim.new(0, 10)
-TabPadding.Parent = SidebarScroll  -- AQUI NO SCROLL
+TabPadding.Parent = SidebarScroll
 
--- Auto-ajustar CanvasSize
 TabList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
     SidebarScroll.CanvasSize = UDim2.new(0, 0, 0, TabList.AbsoluteContentSize.Y + 20)
 end)
