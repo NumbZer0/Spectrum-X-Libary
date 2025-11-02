@@ -179,24 +179,21 @@ function SpectrumUI:CreateWindow(config)
     MinimizeCorner.CornerRadius = UDim.new(0, 8)
     MinimizeCorner.Parent = MinimizeButton
 
-    -- ========== SIDEBAR COM SCROLLING FRAME (CORRIGIDO) ==========
+-- ========== SIDEBAR COM SCROLLING FRAME (BONITA) ==========
 local Sidebar = Instance.new("Frame")
 Sidebar.Size = UDim2.new(0, 140, 1, -75)
 Sidebar.Position = UDim2.new(0, 10, 0, 70)
 Sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Sidebar.BackgroundTransparency = 1  -- TRANSPARENTE
 Sidebar.BorderSizePixel = 0
 Sidebar.ClipsDescendants = true
 Sidebar.Parent = MainFrame
-
-local SidebarCorner = Instance.new("UICorner")
-SidebarCorner.CornerRadius = UDim.new(0, 10)
-SidebarCorner.Parent = Sidebar
 
 -- SCROLLING FRAME DENTRO DA SIDEBAR
 local SidebarScroll = Instance.new("ScrollingFrame")
 SidebarScroll.Size = UDim2.new(1, 0, 1, 0)
 SidebarScroll.Position = UDim2.new(0, 0, 0, 0)
-SidebarScroll.BackgroundTransparency = 1
+SidebarScroll.BackgroundTransparency = 1  -- TRANSPARENTE
 SidebarScroll.BorderSizePixel = 0
 SidebarScroll.ScrollBarThickness = 4
 SidebarScroll.ScrollBarImageColor3 = Color3.fromRGB(128, 0, 0)
@@ -204,7 +201,7 @@ SidebarScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 SidebarScroll.Parent = Sidebar
 
 local TabList = Instance.new("UIListLayout")
-TabList.Padding = UDim.new(0, 14)
+TabList.Padding = UDim.new(0, 8)  -- MENOS ESPAÇO (era 14)
 TabList.SortOrder = Enum.SortOrder.LayoutOrder
 TabList.Parent = SidebarScroll
 
@@ -286,51 +283,79 @@ end)
         end)
 
         local TabButton = Instance.new("TextButton")
-        TabButton.Size = UDim2.new(1, 0, 0, 35)
-        TabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-        TabButton.BorderSizePixel = 0
-        TabButton.Text = ""
-        TabButton.AutoButtonColor = false
-        TabButton.Parent = SidebarScroll
+TabButton.Size = UDim2.new(1, 0, 0, 35)
+TabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+TabButton.BorderSizePixel = 0
+TabButton.Text = ""
+TabButton.AutoButtonColor = false
+TabButton.Parent = SidebarScroll  -- IMPORTANTE: SidebarScroll, não Sidebar!
 
-        local TabButtonCorner = Instance.new("UICorner")
-        TabButtonCorner.CornerRadius = UDim.new(0, 8)
-        TabButtonCorner.Parent = TabButton
+local TabButtonCorner = Instance.new("UICorner")
+TabButtonCorner.CornerRadius = UDim.new(0, 8)
+TabButtonCorner.Parent = TabButton
 
-        local TabLabel = Instance.new("TextLabel")
-        TabLabel.Size = UDim2.new(1, -10, 1, 0)
-        TabLabel.Position = UDim2.new(0, 10, 0, 0)
-        TabLabel.BackgroundTransparency = 1
-        TabLabel.Text = tabConfig.Name or "Tab"
-        TabLabel.Font = Enum.Font.GothamBold
-        TabLabel.TextSize = 13
-        TabLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-        TabLabel.TextXAlignment = Enum.TextXAlignment.Left
-        TabLabel.Parent = TabButton
+-- ÍCONE (se tiver)
+if tabConfig.Icon then
+    local TabIcon = Instance.new("ImageLabel")
+    TabIcon.Size = UDim2.new(0, 20, 0, 20)
+    TabIcon.Position = UDim2.new(0, 8, 0.5, -10)
+    TabIcon.BackgroundTransparency = 1
+    TabIcon.Image = tabConfig.Icon
+    TabIcon.ImageColor3 = Color3.fromRGB(200, 200, 200)
+    TabIcon.Parent = TabButton
+end
 
-        TabButton.MouseButton1Click:Connect(function()
-            for _, tab in pairs(Window.Tabs) do
-                tab.Frame.Visible = false
-                tab.Button.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-                tab.Label.TextColor3 = Color3.fromRGB(200, 200, 200)
-            end
+local TabLabel = Instance.new("TextLabel")
+TabLabel.Size = UDim2.new(1, tabConfig.Icon and -38 or -10, 1, 0)
+TabLabel.Position = UDim2.new(0, tabConfig.Icon and 32 or 10, 0, 0)
+TabLabel.BackgroundTransparency = 1
+TabLabel.Text = tabConfig.Name or "Tab"
+TabLabel.Font = Enum.Font.GothamBold
+TabLabel.TextSize = 13
+TabLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+TabLabel.TextXAlignment = Enum.TextXAlignment.Left
+TabLabel.Parent = TabButton
 
-            TabFrame.Visible = true
-            TabButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
-            TabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        end)
-
-        table.insert(Window.Tabs, {
-            Frame = TabFrame,
-            Button = TabButton,
-            Label = TabLabel
-        })
-
-        if #Window.Tabs == 1 then
-            TabFrame.Visible = true
-            TabButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
-            TabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TabButton.MouseButton1Click:Connect(function()
+    for _, tab in pairs(Window.Tabs) do
+        tab.Frame.Visible = false
+        tab.Button.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+        tab.Label.TextColor3 = Color3.fromRGB(200, 200, 200)
+        -- Mudar cor do ícone também
+        if tab.Icon then
+            tab.Icon.ImageColor3 = Color3.fromRGB(200, 200, 200)
         end
+    end
+
+    TabFrame.Visible = true
+    TabButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
+    TabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    
+    -- Mudar cor do ícone quando selecionado
+    local icon = TabButton:FindFirstChild("TabIcon")
+    if icon then
+        icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    end
+end)
+
+-- Salvar referência do ícone
+local tabIcon = TabButton:FindFirstChild("TabIcon")
+
+table.insert(Window.Tabs, {
+    Frame = TabFrame,
+    Button = TabButton,
+    Label = TabLabel,
+    Icon = tabIcon  -- Guardar referência
+})
+
+if #Window.Tabs == 1 then
+    TabFrame.Visible = true
+    TabButton.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
+    TabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    if tabIcon then
+        tabIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    end
+end
 
         function Tab:Button(btnConfig)
     -- FRAME EXTERNO (igual InputFrame)
