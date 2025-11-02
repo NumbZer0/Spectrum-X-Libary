@@ -181,7 +181,7 @@ function SpectrumUI:CreateWindow(config)
 
 -- ========== SIDEBAR PRETA (ALL BLACK) ==========
 local Sidebar = Instance.new("Frame")
-Sidebar.Name = "SideBar"
+Sidebar.Name = "Sidebar"
 Sidebar.Size = UDim2.new(0, 140, 1, -75)
 Sidebar.Position = UDim2.new(0, 10, 0, 70)
 Sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- 🖤 PRETO TOTAL
