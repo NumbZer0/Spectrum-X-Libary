@@ -179,13 +179,13 @@ function SpectrumUI:CreateWindow(config)
     MinimizeCorner.CornerRadius = UDim.new(0, 8)
     MinimizeCorner.Parent = MinimizeButton
 
--- ========== SIDEBAR PRETA (IGUAL O CONTENT) ==========
+-- ========== SIDEBAR PRETA (ALL BLACK) ==========
 local Sidebar = Instance.new("Frame")
-SideBar.Name = "SideBar" -- nome dela
+Sidebar.Name = "SideBar"
 Sidebar.Size = UDim2.new(0, 140, 1, -75)
 Sidebar.Position = UDim2.new(0, 10, 0, 70)
-Sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- PRETO
-Sidebar.BackgroundTransparency = 0  -- SEM TRANSPARÊNCIA
+Sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- 🖤 PRETO TOTAL
+Sidebar.BackgroundTransparency = 0  -- ⚠️ ISSO AQUI TEM QUE SER 0, NÃO 1!
 Sidebar.BorderSizePixel = 0
 Sidebar.Parent = MainFrame
 
@@ -195,10 +195,10 @@ SidebarCorner.Parent = Sidebar
 
 local SidebarScroll = Instance.new("ScrollingFrame")
 SidebarScroll.Size = UDim2.new(1, 0, 1, 0)
-SidebarScroll.BackgroundTransparency = 0  -- Scroll transparente
+SidebarScroll.BackgroundTransparency = 1  -- Scroll transparente
 SidebarScroll.BorderSizePixel = 0
 SidebarScroll.ScrollBarThickness = 4
-SidebarScroll.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
+SidebarScroll.ScrollBarImageColor3 = Color3.fromRGB(128, 0, 0)  -- Barra vermelha
 SidebarScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 SidebarScroll.Parent = Sidebar
 
