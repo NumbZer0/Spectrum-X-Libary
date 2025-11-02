@@ -678,12 +678,12 @@ function Tab:Slider(sliderConfig)
     SliderCorner.Parent = SliderFrame
 
     local SliderStroke = Instance.new("UIStroke")
-    SliderStroke.Color = Color3.fromRGB(60, 60, 70)  -- Borda cinza escuro
+    SliderStroke.Color = Color3.fromRGB(60, 60, 70)
     SliderStroke.Thickness = 2
     SliderStroke.Transparency = 0.2
     SliderStroke.Parent = SliderFrame
 
-    -- TEXTO DO SLIDER (lado esquerdo)
+    -- TEXTO DO SLIDER
     local SliderLabel = Instance.new("TextLabel")
     SliderLabel.Size = UDim2.new(0.6, -10, 0, 20)
     SliderLabel.Position = UDim2.new(0, 12, 0, 8)
@@ -695,7 +695,7 @@ function Tab:Slider(sliderConfig)
     SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
     SliderLabel.Parent = SliderFrame
 
-    -- INPUT BOX (lado direito)
+    -- INPUT BOX
     local InputBox = Instance.new("TextBox")
     InputBox.Size = UDim2.new(0.3, -10, 0, 25)
     InputBox.Position = UDim2.new(0.7, 5, 0, 8)
@@ -728,7 +728,7 @@ function Tab:Slider(sliderConfig)
     -- BARRA DE PROGRESSO (vermelha)
     local SliderProgress = Instance.new("Frame")
     SliderProgress.Size = UDim2.new(0, 0, 1, 0)
-    SliderProgress.BackgroundColor3 = Color3.fromRGB(128, 0, 0)  -- Vermelho escuro
+    SliderProgress.BackgroundColor3 = Color3.fromRGB(128, 0, 0)
     SliderProgress.BorderSizePixel = 0
     SliderProgress.Parent = SliderTrack
 
@@ -740,7 +740,7 @@ function Tab:Slider(sliderConfig)
     local SliderButton = Instance.new("TextButton")
     SliderButton.Size = UDim2.new(0, 18, 0, 18)
     SliderButton.Position = UDim2.new(0, -9, 0.5, -9)
-    SliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- Branca
+    SliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     SliderButton.BorderSizePixel = 0
     SliderButton.Text = ""
     SliderButton.ZIndex = 2
@@ -756,13 +756,17 @@ function Tab:Slider(sliderConfig)
     local default = sliderConfig.Default or min
     local currentValue = default
 
-    -- FUNÇÃO PARA ATUALIZAR SLIDER
+    -- FUNÇÃO PARA ATUALIZAR SLIDER (CORRIGIDA)
     local function updateSlider(value)
         value = math.clamp(value, min, max)
         currentValue = value
         
         local percent = (value - min) / (max - min)
         SliderProgress.Size = UDim2.new(percent, 0, 1, 0)
+        
+        -- ⚠️ LINHA QUE FALTOU: Atualizar posição da bolinha!
+        SliderButton.Position = UDim2.new(percent, -9, 0.5, -9)
+        
         InputBox.Text = tostring(math.floor(value))
         
         if sliderConfig.Callback then
@@ -780,46 +784,43 @@ function Tab:Slider(sliderConfig)
         end
     end)
 
-    -- ARRASTAR SLIDER (100% MOBILE)
-    local function updateSliderFromInput(input)
-        local trackAbsolutePos = SliderTrack.AbsolutePosition.X
-        local trackAbsoluteSize = SliderTrack.AbsoluteSize.X
-        local inputAbsolutePos = input.Position.X
-        
-        local relativePos = math.clamp(inputAbsolutePos - trackAbsolutePos, 0, trackAbsoluteSize)
-        local percent = relativePos / trackAbsoluteSize
-        local value = min + (max - min) * percent
-        
-        updateSlider(value)
+    -- SISTEMA DE ARRASTAR CORRIGIDO (MOBILE FRIENDLY)
+    local dragging = false
+    
+    local function startDragging()
+        dragging = true
+    end
+    
+    local function stopDragging()
+        dragging = false
+    end
+    
+    local function updateFromMouse()
+        if dragging then
+            local mouse = game:GetService("Players").LocalPlayer:GetMouse()
+            local trackAbsolutePos = SliderTrack.AbsolutePosition.X
+            local trackAbsoluteSize = SliderTrack.AbsoluteSize.X
+            local mouseX = mouse.X
+            
+            local relativePos = math.clamp(mouseX - trackAbsolutePos, 0, trackAbsoluteSize)
+            local percent = relativePos / trackAbsoluteSize
+            local value = min + (max - min) * percent
+            
+            updateSlider(value)
+        end
     end
 
-    SliderButton.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            local connection
-            connection = input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    connection:Disconnect()
-                else
-                    updateSliderFromInput(input)
-                end
-            end)
+    -- CONECTAR EVENTOS
+    SliderButton.MouseButton1Down:Connect(startDragging)
+    SliderTrack.MouseButton1Down:Connect(startDragging)
+    
+    game:GetService("UserInputService").InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            stopDragging()
         end
     end)
-
-    SliderTrack.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            updateSliderFromInput(input)
-        end
-    end)
-
-    -- MOBILE: Suporte a arrastar em qualquer lugar do slider
-    UserInputService.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            if SliderButton:IsActive() or SliderTrack:IsActive() then
-                updateSliderFromInput(input)
-            end
-        end
-    end)
+    
+    game:GetService("RunService").Heartbeat:Connect(updateFromMouse)
 
     -- VALOR INICIAL
     updateSlider(default)
