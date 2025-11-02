@@ -195,10 +195,11 @@ SidebarCorner.Parent = Sidebar
 
 local SidebarScroll = Instance.new("ScrollingFrame")
 SidebarScroll.Size = UDim2.new(1, 0, 1, 0)
-SidebarScroll.BackgroundTransparency = 1  -- Scroll transparente
+SidebarScroll.BackgroundColor3 = Color3.fromRGB(0, 0, 0)  -- 🖤 FORÇAR PRETO
+SidebarScroll.BackgroundTransparency = 0  -- 🟢 ZERO TRANSPARÊNCIA
 SidebarScroll.BorderSizePixel = 0
 SidebarScroll.ScrollBarThickness = 4
-SidebarScroll.ScrollBarImageColor3 = Color3.fromRGB(128, 0, 0)  -- Barra vermelha
+SidebarScroll.ScrollBarImageColor3 = Color3.fromRGB(128, 0, 0)
 SidebarScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 SidebarScroll.Parent = Sidebar
 
